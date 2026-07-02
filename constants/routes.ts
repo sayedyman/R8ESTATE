@@ -1,0 +1,17 @@
+export const ROUTES = {
+  HOME: "/",
+  LOGIN: "/login",
+  SIGNUP: "/signup",
+  DASHBOARD: "/dashboard",
+  TRUST_CARD: "/trust-card",
+  VERIFICATION: "/verification",
+  SETTINGS: "/settings",
+  PROFILE: "/profile",
+  FORGOT_PASSWORD: "/forgot-password",
+  RESET_PASSWORD: "/reset-password",
+  ONBOARDING_GOAL: "/onboarding/goal",
+  ONBOARDING_WELCOME: "/onboarding/welcome",
+  ONBOARDING_WIZARD: "/onboarding/wizard",
+  ONBOARDING_SUCCESS: "/onboarding/success",
+  PUBLISH_TRUST_CARD: "/onboarding/publish",
+} as const;
