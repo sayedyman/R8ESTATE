@@ -69,7 +69,7 @@ export function CvImportModal({ onClose, onSuccess }: CvImportModalProps) {
     if (file) validateAndUpload(file)
   }
 
-  const updateReviewField = (field: keyof ExtractedCVData, value: string) => {
+  const updateReviewField = (field: keyof ExtractedCVData, value: any) => {
     setReviewData(prev => prev ? { ...prev, [field]: value } : prev)
   }
 
@@ -223,7 +223,7 @@ export function CvImportModal({ onClose, onSuccess }: CvImportModalProps) {
                   {[
                     "Full Name", "Job Title", "Company",
                     "Professional Bio", "Contact Details", "LinkedIn & Website",
-                    "Specialization", "Experience", "Achievements",
+                    "Specialization", "Experience", "Strengths", "Achievements",
                   ].map(item => (
                     <li key={item} className="flex items-center gap-2 text-xs text-slate-600 font-medium">
                       <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
@@ -343,12 +343,12 @@ export function CvImportModal({ onClose, onSuccess }: CvImportModalProps) {
                     />
                   </div>
 
-                  {/* Skills */}
+                  {/* Strengths */}
                   <ReviewField
                     label={t("wizard.strengthDesc")}
-                    id="cv-skills"
-                    value={reviewData.skills || ""}
-                    onChange={(v) => updateReviewField("skills", v)}
+                    id="cv-strengths"
+                    value={reviewData.strengths?.join(", ") || ""}
+                    onChange={(v) => updateReviewField("strengths", v ? v.split(",").map(s => s.trim()) : [])}
                     placeholder={t("wizard.strengthDesc")}
                   />
 

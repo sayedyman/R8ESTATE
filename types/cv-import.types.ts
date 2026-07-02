@@ -26,7 +26,7 @@ export interface ExtractedCVData {
   website: string | null
   linkedIn: string | null
   specialization: string | null
-  skills: string | null
+  strengths: string[] | null
   experience: ExtractedExperience | null
   achievement: ExtractedAchievement | null
 }

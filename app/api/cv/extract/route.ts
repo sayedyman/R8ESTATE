@@ -26,7 +26,7 @@ Extract these fields (use null if not found):
   "website": string | null,
   "linkedIn": string | null,
   "specialization": string | null,
-  "skills": string | null,
+  "strengths": string[] | null,
   "experience": {
     "jobTitle": string | null,
     "company": string | null,
@@ -51,7 +51,7 @@ Rules:
 - website: Personal or company website URL
 - linkedIn: LinkedIn profile URL
 - specialization: Their primary area of professional focus or expertise (one line)
-- skills: A comma-separated list of their top professional skills
+- strengths: Identify exactly 1-2 strongest professional strengths/value propositions (e.g. ["Negotiation"] or ["Luxury Properties", "Lead Generation"]). If one strength clearly represents the user's expertise, return only one. Do not list generic software skills or long keyword lists. Never copy the entire Skills section from the CV.
 - experience: If multiple work experiences exist, summarize the most relevant professional experience into a concise, high-quality Trust Card description rather than copying the CV verbatim.
 - achievement: If multiple achievements exist, summarize the strongest and most relevant achievement into a concise, professional highlight suitable for the Trust Card.
 - Never fabricate or hallucinate information. If a field cannot be confidently extracted, leave it empty (null).
