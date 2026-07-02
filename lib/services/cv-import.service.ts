@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 
 const CV_BUCKET = 'cvs'
 
@@ -17,7 +17,7 @@ export class CVImportService {
    * Returns the storage path for subsequent extraction.
    */
   static async uploadCV(fileBuffer: Buffer, userId: string, mimeType: string): Promise<string> {
-    const supabase = await createClient()
+    const supabase = createAdminClient()
     const timestamp = Date.now()
     const path = `${userId}/${timestamp}.pdf`
 
@@ -39,7 +39,7 @@ export class CVImportService {
    * Generates a short-lived signed URL (5 minutes) for the AI to access the CV.
    */
   static async getSignedUrl(path: string): Promise<string> {
-    const supabase = await createClient()
+    const supabase = createAdminClient()
 
     const { data, error } = await supabase.storage
       .from(CV_BUCKET)
@@ -50,5 +50,21 @@ export class CVImportService {
     }
 
     return data.signedUrl
+  }
+
+  /**
+   * Deletes a CV from storage (used to clean up anonymous files).
+   */
+  static async deleteCV(path: string): Promise<void> {
+    const supabase = createAdminClient()
+    
+    const { error } = await supabase.storage
+      .from(CV_BUCKET)
+      .remove([path])
+
+    if (error) {
+      console.error(`Failed to delete temporary CV ${path}:`, error)
+      // We don't throw here to avoid failing the whole request if deletion fails during cleanup
+    }
   }
 }

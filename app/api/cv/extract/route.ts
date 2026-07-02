@@ -67,24 +67,31 @@ Rules:
  * Authentication: requires an active session.
  */
 export async function POST(request: NextRequest) {
-  try {
-    // Authenticate
-    const session = await getServerSession(authOptions)
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+  let requestPath: string | undefined;
 
+  try {
     const body = await request.json()
     const { path } = body as { path?: string }
+    requestPath = path;
 
     if (!path) {
       return NextResponse.json({ error: 'Storage path is required.' }, { status: 400 })
     }
 
-    // Ensure the path belongs to the authenticated user (security check)
-    const userId = session.user.id
-    if (!path.startsWith(`${userId}/`)) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    // Authenticate (optional)
+    const session = await getServerSession(authOptions)
+
+    // Authorization check
+    if (session?.user?.id) {
+      // Authenticated users can extract their own files or anonymous ones
+      if (!path.startsWith(`${session.user.id}/`) && !path.startsWith('anonymous/')) {
+        return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+      }
+    } else {
+      // Anonymous users can ONLY extract anonymous files
+      if (!path.startsWith('anonymous/')) {
+        return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+      }
     }
 
     // Get a short-lived signed URL for the stored CV
@@ -144,5 +151,9 @@ export async function POST(request: NextRequest) {
       { error: 'Extraction failed. Please try again or fill in your details manually.' },
       { status: 500 }
     )
+  } finally {
+    if (requestPath && requestPath.startsWith('anonymous/')) {
+      await CVImportService.deleteCV(requestPath)
+    }
   }
 }

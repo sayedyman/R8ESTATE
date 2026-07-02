@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth/auth-options'
 import { CVImportService } from '@/lib/services/cv-import.service'
 import { CVImportUtils } from '@/lib/utils/cv-import.utils'
+import { randomUUID } from 'crypto'
 
 export const runtime = 'nodejs'
 export const maxDuration = 30
@@ -17,11 +18,11 @@ export const maxDuration = 30
  */
 export async function POST(request: NextRequest) {
   try {
-    // Authenticate
+    // Authenticate (optional for anonymous uploads)
     const session = await getServerSession(authOptions)
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    
+    // Determine user ID or generate an anonymous path prefix
+    const uploadId = session?.user?.id || `anonymous/${randomUUID()}`
 
     // Parse form data
     const formData = await request.formData()
@@ -41,8 +42,8 @@ export async function POST(request: NextRequest) {
     const arrayBuffer = await file.arrayBuffer()
     const buffer = Buffer.from(arrayBuffer)
 
-    // Upload to Supabase Storage
-    const path = await CVImportService.uploadCV(buffer, session.user.id, file.type)
+    // Upload to Supabase Storage (using admin client internally)
+    const path = await CVImportService.uploadCV(buffer, uploadId, file.type)
 
     return NextResponse.json({ path }, { status: 200 })
   } catch (error) {
