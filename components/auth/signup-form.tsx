@@ -15,6 +15,7 @@ import { PasswordInput } from "./password-input"
 import { GoogleButton } from "./google-button"
 import { LoadingButton } from "./loading-button"
 import { PasswordStrengthIndicator } from "./password-strength-indicator"
+import { useTranslations } from "next-intl"
 
 import {
   Form,
@@ -36,6 +37,7 @@ export function SignupForm() {
   const { savePreviewToPermanent } = useOnboardingStore()
   const [error, setError] = React.useState<string | null>(null)
   const [isSuccess, setIsSuccess] = React.useState(false)
+  const t = useTranslations("auth")
 
   const form = useForm<SignupFormData>({
     resolver: zodResolver(signupSchema),
@@ -70,8 +72,8 @@ export function SignupForm() {
   return (
     <AuthCard>
       <AuthHeader 
-        title="Create your account" 
-        subtitle="Start building your professional reputation today" 
+        title={t("signupTitle")} 
+        subtitle={t("signupSubtitle")} 
       />
 
       {error && (
@@ -84,7 +86,7 @@ export function SignupForm() {
       {isSuccess && (
         <Alert className="mb-6 bg-success/15 text-success border-success/20">
           <CheckCircle2 className="h-4 w-4 text-success" />
-          <AlertDescription>Account created successfully! Redirecting...</AlertDescription>
+          <AlertDescription>{t("signupSuccess")}</AlertDescription>
         </Alert>
       )}
 
@@ -95,7 +97,7 @@ export function SignupForm() {
             name="fullName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Full Name</FormLabel>
+                <FormLabel>{t("fullName")}</FormLabel>
                 <FormControl>
                   <Input 
                     placeholder="John Doe" 
@@ -114,7 +116,7 @@ export function SignupForm() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email Address</FormLabel>
+                <FormLabel>{t("email")}</FormLabel>
                 <FormControl>
                   <Input 
                     placeholder="you@example.com" 
@@ -134,7 +136,7 @@ export function SignupForm() {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Password</FormLabel>
+                <FormLabel>{t("password")}</FormLabel>
                 <FormControl>
                   <PasswordInput 
                     placeholder="••••••••" 
@@ -167,13 +169,13 @@ export function SignupForm() {
                 </FormControl>
                 <div className="leading-tight flex-1">
                   <FormLabel className="text-[13px] font-normal cursor-pointer text-slate-600 leading-relaxed block">
-                    I agree to the{" "}
+                    {t("agreeTo")}
                     <Link href="#" className="font-medium text-slate-900 hover:text-primary hover:underline underline-offset-2 transition-colors">
-                      Terms of Service
+                      {t("terms")}
                     </Link>
-                    {" "}and{" "}
+                    {t("and")}
                     <Link href="#" className="font-medium text-slate-900 hover:text-primary hover:underline underline-offset-2 transition-colors">
-                      Privacy Policy
+                      {t("privacy")}
                     </Link>.
                   </FormLabel>
                 </div>
@@ -194,7 +196,7 @@ export function SignupForm() {
             isLoading={form.formState.isSubmitting}
             disabled={isSuccess}
           >
-            {form.formState.isSubmitting ? "Creating account..." : "Create Account"}
+            {form.formState.isSubmitting ? t("creatingAccount") : t("createAccount")}
           </LoadingButton>
         </form>
       </Form>
@@ -204,19 +206,21 @@ export function SignupForm() {
           <span className="w-full border-t border-slate-200" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-white px-2 text-slate-500 font-medium">Or continue with</span>
+          <span className="bg-white px-2 text-slate-500 font-medium">{t("orContinueWith")}</span>
         </div>
       </div>
 
-      <GoogleButton disabled={form.formState.isSubmitting || isSuccess} />
+      <GoogleButton disabled={form.formState.isSubmitting || isSuccess}>
+        {t("continueWithGoogle")}
+      </GoogleButton>
 
       <p className="text-center text-sm text-slate-500 mt-8">
-        Already have an account?{" "}
+        {t("haveAccount")}{" "}
         <Link 
           href={ROUTES.LOGIN} 
-          className="font-semibold text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+          className="font-semibold text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm rtl:flip"
         >
-          Sign In
+          {t("signIn")}
         </Link>
       </p>
     </AuthCard>

@@ -6,37 +6,32 @@ import { SectionTitle } from "@/components/ui/section-title"
 import { FeatureCard } from "@/components/ui/feature-card"
 import { motion } from "framer-motion"
 import { Shield, Target, UserCheck, Share2, Star, Lock } from "lucide-react"
+import { useTranslations } from "next-intl"
 
 const features = [
   {
     icon: Shield,
-    title: "Build Trust Faster",
-    description: "Build trust before the first meeting with verified professional credentials."
+    key: "buildTrust"
   },
   {
     icon: UserCheck,
-    title: "Verified Credentials",
-    description: "Verify your identity and licenses through official records."
+    key: "verifiedCredentials"
   },
   {
     icon: Star,
-    title: "Authentic Reviews",
-    description: "Reviews come only from verified completed transactions."
+    key: "authenticReviews"
   },
   {
     icon: Target,
-    title: "Stand Out",
-    description: "Make a strong first impression with an independently verified track record."
+    key: "standOut"
   },
   {
     icon: Share2,
-    title: "Easy Sharing",
-    description: "Share your verified profile via link or QR code."
+    key: "easySharing"
   },
   {
     icon: Lock,
-    title: "Data Privacy",
-    description: "Your verification data remains private and secure."
+    key: "dataPrivacy"
   }
 ]
 
@@ -56,6 +51,7 @@ const itemVariants = {
 }
 
 export function Benefits() {
+  const t = useTranslations("benefits")
   return (
     <section id="features" className="py-20 md:py-28 bg-background">
       <Container>
@@ -67,8 +63,8 @@ export function Benefits() {
           className="mb-16"
         >
           <SectionTitle 
-            title="The Foundation of Professional Trust"
-            subtitle="Equip yourself with the verified credentials you need to demonstrate your credibility and build stronger client relationships."
+            title={t("sectionTitle")}
+            subtitle={t("sectionSubtitle")}
           />
         </motion.div>
         
@@ -83,8 +79,8 @@ export function Benefits() {
             <motion.div key={index} variants={itemVariants} className="h-full">
               <FeatureCard 
                 icon={feature.icon}
-                title={feature.title}
-                description={feature.description}
+                title={t(`items.${feature.key}.title`)}
+                description={t(`items.${feature.key}.description`)}
               />
             </motion.div>
           ))}

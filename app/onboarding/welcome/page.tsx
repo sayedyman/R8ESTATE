@@ -7,10 +7,14 @@ import { Sparkles } from "lucide-react"
 import { useOnboardingStore } from "@/stores/onboarding-store"
 import { ROUTES } from "@/constants/routes"
 import { Button } from "@/components/ui/button"
+import { useAuthSync } from "@/hooks/use-auth-sync"
 
 export default function WelcomePage() {
   const router = useRouter()
   const { selectedGoal, isOnboardingCompleted, userMode } = useOnboardingStore()
+  
+  // Automatically sync local onboarding draft to Supabase on login
+  useAuthSync()
 
   React.useEffect(() => {
     if (isOnboardingCompleted) {

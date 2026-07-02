@@ -8,7 +8,7 @@ import { WizardNavigation } from "@/components/onboarding/wizard-navigation"
 
 interface SelectionStepProps {
   description: string;
-  options: string[];
+  options: { value: string, label: string }[];
   value: string;
   onChange: (val: string) => void;
   onNext: () => void;
@@ -33,7 +33,7 @@ export function SelectionStep({
   const [isOther, setIsOther] = React.useState(false)
 
   React.useEffect(() => {
-    if (value && !options.includes(value)) {
+    if (value && !options.some(opt => opt.value === value)) {
       setIsOther(true)
     }
   }, [value, options])
@@ -46,7 +46,7 @@ export function SelectionStep({
   const handleSelect = (opt: string) => {
     if (opt === "Other") {
       setIsOther(true)
-      if (options.includes(value) || !value) {
+      if (options.some(o => o.value === value) || !value) {
         onChange(searchTerm)
       }
     } else {
@@ -58,7 +58,7 @@ export function SelectionStep({
   }
 
   const filteredOptions = options.filter(s => 
-    s.toLowerCase().includes(searchTerm.toLowerCase())
+    s.label.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
   return (
@@ -80,12 +80,12 @@ export function SelectionStep({
 
         <div className="flex flex-wrap gap-3">
           {filteredOptions.map((opt) => {
-            const isSelected = value === opt && !isOther;
+            const isSelected = value === opt.value && !isOther;
             return (
               <button
-                key={opt}
+                key={opt.value}
                 type="button"
-                onClick={() => handleSelect(opt)}
+                onClick={() => handleSelect(opt.value)}
                 className={`flex items-center gap-2 px-5 h-11 rounded-full text-[15px] font-medium transition-all duration-200 ${
                   isSelected 
                     ? "bg-primary text-primary-foreground shadow-md ring-2 ring-primary/20 ring-offset-1" 
@@ -93,7 +93,7 @@ export function SelectionStep({
                 }`}
               >
                 {isSelected && <CheckCircle2 className="h-4 w-4 shrink-0" />}
-                {opt}
+                {opt.label}
               </button>
             )
           })}

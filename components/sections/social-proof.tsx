@@ -3,14 +3,16 @@
 import * as React from "react"
 import { Container } from "@/components/ui/container"
 import { motion } from "framer-motion"
+import { useTranslations } from "next-intl"
 
 const metrics = [
-  { id: 1, label: "Professional Reputation Platform" },
-  { id: 2, label: "Verified Profiles" },
-  { id: 3, label: "Built for Real Estate Professionals" },
+  { id: 1, key: "1" },
+  { id: 2, key: "2" },
+  { id: 3, key: "3" },
 ]
 
 export function SocialProof() {
+  const t = useTranslations("socialProof")
   return (
     <section className="border-y border-border/50 bg-muted/20 py-10">
       <Container>
@@ -24,8 +26,8 @@ export function SocialProof() {
               transition={{ duration: 0.4, delay: index * 0.1 }}
               className="text-center md:text-left"
             >
-              <p className="text-sm font-semibold text-foreground uppercase tracking-widest whitespace-nowrap">
-                {metric.label}
+              <p className="text-sm font-semibold text-foreground uppercase tracking-widest whitespace-nowrap rtl:flip">
+                {t(`items.${metric.key}`)}
               </p>
             </motion.div>
           ))}

@@ -6,9 +6,29 @@ import { RecentActivityItem } from "@/types/dashboard"
 
 interface RecentActivityProps {
   activities: RecentActivityItem[]
+  hasNoAnalytics?: boolean
 }
 
-export function RecentActivity({ activities }: RecentActivityProps) {
+export function RecentActivity({ activities, hasNoAnalytics = false }: RecentActivityProps) {
+  if (hasNoAnalytics) {
+    return (
+      <Card className="h-full shadow-sm border-slate-200">
+        <CardHeader className="pb-4 border-b border-slate-100 shrink-0">
+          <CardTitle className="text-lg font-bold text-slate-900">Recent Activity</CardTitle>
+          <p className="text-sm text-slate-500 mt-1 font-medium">Real-time interactions on your profile.</p>
+        </CardHeader>
+        <CardContent className="pt-6 flex flex-col justify-center items-center py-12">
+          <div className="text-center space-y-2">
+            <h3 className="text-sm font-semibold text-slate-700">No activity yet</h3>
+            <p className="text-xs text-slate-500 max-w-[220px] leading-relaxed mx-auto">
+              When people start interacting with your Trust Card, you'll see it here.
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+    )
+  }
+
   if (!activities || activities.length === 0) return null
 
   return (

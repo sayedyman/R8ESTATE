@@ -1,5 +1,6 @@
 import * as React from "react"
 import { Button } from "@/components/ui/button"
+import { useTranslations } from "next-intl"
 
 interface WizardNavigationProps {
   onNext?: () => void;
@@ -22,6 +23,8 @@ export function WizardNavigation({
   isSubmit = true,
   hideNext = false,
 }: WizardNavigationProps) {
+  const t = useTranslations("onboarding.wizard")
+
   return (
     <div className="pt-8 mt-auto flex flex-col-reverse sm:flex-row gap-4 justify-between items-center w-full border-t border-slate-100">
       <div className="w-full sm:w-auto flex justify-start">
@@ -33,7 +36,7 @@ export function WizardNavigation({
             className="w-full sm:w-auto min-w-[120px] h-12 text-base rounded-xl font-semibold shadow-sm" 
             onClick={onPrevious}
           >
-            {previousLabel}
+            {previousLabel === "Previous" ? t("previous") : previousLabel}
           </Button>
         )}
       </div>
@@ -50,7 +53,7 @@ export function WizardNavigation({
               disabled={nextDisabled}
               onClick={onNext}
             >
-              {nextLabel}
+              {nextLabel === "Next Step" ? t("next") : nextLabel}
             </Button>
           )
         )}

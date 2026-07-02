@@ -4,13 +4,32 @@ import * as React from "react"
 import { useRouter } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
 import { useOnboardingStore } from "@/stores/onboarding-store"
+import { useSession } from "next-auth/react"
 import { ROUTES } from "@/constants/routes"
 import { TrustCardPreview } from "@/components/onboarding/trust-card-preview"
 import { WizardStep1, WizardStep2, WizardStep3, WizardStep4, WizardStep5, WizardStep6, WizardStep7 } from "@/components/onboarding/wizard-steps"
+import { useTranslations } from "next-intl"
 
 export default function WizardPage() {
   const router = useRouter()
-  const { currentStep, selectedGoal, isOnboardingCompleted, userMode } = useOnboardingStore()
+  const { currentStep, selectedGoal, isOnboardingCompleted, userMode, trustCardDraft, updateDraft } = useOnboardingStore()
+  const { data: session } = useSession()
+  const t = useTranslations("onboarding.wizard")
+
+  React.useEffect(() => {
+    if (session?.user) {
+      const updates: Partial<typeof trustCardDraft> = {}
+      if (!trustCardDraft.fullName && session.user.name) {
+        updates.fullName = session.user.name
+      }
+      if (!trustCardDraft.profilePhoto && session.user.image) {
+        updates.profilePhoto = session.user.image
+      }
+      if (Object.keys(updates).length > 0) {
+        updateDraft(updates)
+      }
+    }
+  }, [session, trustCardDraft, updateDraft])
 
   React.useEffect(() => {
     if (isOnboardingCompleted) {
@@ -49,9 +68,9 @@ export default function WizardPage() {
       {/* Left side: Live Preview (Sticky on desktop) */}
       <div className="w-full lg:w-1/2 flex justify-center lg:sticky lg:top-32 order-2 lg:order-1">
         <div className="w-full max-w-md">
-          <div className="mb-4 text-center lg:text-left">
-            <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-500 mb-1">Live Preview</h2>
-            <p className="text-xs text-slate-400">Updates as you type</p>
+          <div className="mb-4 text-center lg:text-start">
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-500 mb-1">{t("livePreviewTitle")}</h2>
+            <p className="text-xs text-slate-400">{t("updatesAsYouType")}</p>
           </div>
           <TrustCardPreview />
         </div>
@@ -63,15 +82,15 @@ export default function WizardPage() {
         <div className="mb-8">
           <div className="flex justify-between items-end mb-2">
             <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
-              {currentStep === 1 && "What do you want to be known for?"}
-              {currentStep === 2 && "What's your biggest strength?"}
-              {currentStep === 3 && "Profile Photo"}
-              {currentStep === 4 && "Profile Information"}
-              {currentStep === 5 && "Professional Experience"}
-              {currentStep === 6 && "Professional Achievement"}
+              {currentStep === 1 && t("step1Title")}
+              {currentStep === 2 && t("step2Title")}
+              {currentStep === 3 && t("step3Title")}
+              {currentStep === 4 && t("step4Title")}
+              {currentStep === 5 && t("step5Title")}
+              {currentStep === 6 && t("step6Title")}
             </h1>
             <span className="text-sm font-medium text-slate-500 mb-1">
-              Step {currentStep} of 6
+              {t("stepXof6", { step: currentStep })}
             </span>
           </div>
           

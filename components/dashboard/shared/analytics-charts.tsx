@@ -10,13 +10,14 @@ import { TrendingUp, Star, BarChart3 } from "lucide-react"
 interface AnalyticsChartsProps {
   chartData: ChartDatasets
   chartSummary?: ChartSummary
+  hasNoAnalytics?: boolean
 }
 
-export function AnalyticsCharts({ chartData, chartSummary }: AnalyticsChartsProps) {
+export function AnalyticsCharts({ chartData, chartSummary, hasNoAnalytics = false }: AnalyticsChartsProps) {
   const [filter, setFilter] = React.useState<keyof ChartDatasets>("last-7-days")
 
   const currentData = chartData[filter] || []
-  const hasData = currentData.length > 0
+  const hasData = !hasNoAnalytics && currentData.length > 0
 
   return (
     <Card className="h-full flex flex-col shadow-sm border-slate-200">
@@ -43,7 +44,7 @@ export function AnalyticsCharts({ chartData, chartSummary }: AnalyticsChartsProp
           </div>
 
           {/* Chart summary strip — sourced entirely from config */}
-          {chartSummary && (
+          {!hasNoAnalytics && chartSummary && (
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-emerald-50 border border-emerald-200">
                 <TrendingUp className="h-3.5 w-3.5 text-emerald-600" />
@@ -84,8 +85,14 @@ export function AnalyticsCharts({ chartData, chartSummary }: AnalyticsChartsProp
               <div className="text-slate-300 mx-auto w-12 h-12 rounded-lg bg-slate-50 flex items-center justify-center mb-4">
                 <BarChart3 className="h-6 w-6" />
               </div>
-              <h3 className="text-sm font-semibold text-slate-700">Not enough data</h3>
-              <p className="text-xs text-slate-500 max-w-[200px]">Check back later when you have more profile activity.</p>
+              <h3 className="text-sm font-semibold text-slate-700">
+                {hasNoAnalytics ? "No activity yet" : "Not enough data"}
+              </h3>
+              <p className="text-xs text-slate-500 max-w-[200px] leading-relaxed mx-auto">
+                {hasNoAnalytics 
+                  ? "Analytics will appear once visitors start interacting with your public profile." 
+                  : "Check back later when you have more profile activity."}
+              </p>
             </div>
           </div>
         )}

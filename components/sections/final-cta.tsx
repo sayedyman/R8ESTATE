@@ -7,8 +7,10 @@ import { buttonVariants } from "@/components/ui/button"
 import Link from "next/link"
 import { ROUTES } from "@/constants/routes"
 import { CheckCircle2, ShieldCheck, Lock, Target, Database, TrendingUp, Star } from "lucide-react"
+import { useTranslations } from "next-intl"
 
 export function FinalCTA() {
+  const t = useTranslations("finalCta")
   return (
     <section className="py-24 md:py-32 bg-slate-50 relative overflow-hidden">
       <Container>
@@ -25,27 +27,27 @@ export function FinalCTA() {
             <div className="space-y-8">
               <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-600 shadow-sm">
                 <ShieldCheck className="h-4 w-4 text-primary" />
-                <span>Join Verified Professionals</span>
+                <span>{t("badge")}</span>
               </div>
               
               <div className="space-y-4">
                 <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 leading-[1.15]">
-                  Ready to Build Your Professional Trust Card?
+                  {t("title")}
                 </h2>
                 <p className="text-lg text-slate-600 max-w-md">
-                  Create your professional profile in just a few minutes and start building trust with every client.
+                  {t("subtitle")}
                 </p>
               </div>
               
               <div className="flex flex-col sm:flex-row gap-4 pt-4">
                 <Link 
-                  href={ROUTES.SIGNUP} 
+                  href={`${ROUTES.ONBOARDING_GOAL}?new=true`}
                   className={buttonVariants({ 
                     size: "lg", 
                     className: "h-14 px-8 text-base font-semibold shadow-md hover:shadow-lg transition-all hover:-translate-y-0.5" 
                   })}
                 >
-                  Create My Trust Card
+                  {t("ctaPrimary")}
                 </Link>
                 <Link 
                   href="/contact" 
@@ -55,7 +57,7 @@ export function FinalCTA() {
                     className: "h-14 px-8 text-base font-semibold bg-white hover:bg-slate-50" 
                   })}
                 >
-                  Contact Support
+                  {t("ctaSecondary")}
                 </Link>
               </div>
             </div>
@@ -65,39 +67,39 @@ export function FinalCTA() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-5">
                 
                 {/* Card 1 */}
-                <div className="group bg-white border border-slate-200 rounded-2xl p-5 md:p-6 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
+                <div className="group bg-white border border-slate-200 rounded-2xl p-5 md:p-6 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex flex-col h-full rtl:flip">
                   <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center mb-4 text-primary group-hover:scale-110 transition-transform duration-300">
-                    <TrendingUp className="h-5 w-5" />
+                    <TrendingUp className="h-5 w-5 rtl:flip" />
                   </div>
-                  <h4 className="font-semibold text-slate-900 mb-2">Support Growth</h4>
-                  <p className="text-sm text-slate-600 flex-1">Build a reputation that scales.</p>
+                  <h4 className="font-semibold text-slate-900 mb-2 rtl:flip">{t("cards.supportGrowth.title")}</h4>
+                  <p className="text-sm text-slate-600 flex-1 rtl:flip">{t("cards.supportGrowth.desc")}</p>
                 </div>
                 
                 {/* Card 2 */}
-                <div className="group bg-white border border-slate-200 rounded-2xl p-5 md:p-6 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
+                <div className="group bg-white border border-slate-200 rounded-2xl p-5 md:p-6 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex flex-col h-full rtl:flip">
                   <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center mb-4 text-primary group-hover:scale-110 transition-transform duration-300">
-                    <Star className="h-5 w-5" />
+                    <Star className="h-5 w-5 rtl:flip" />
                   </div>
-                  <h4 className="font-semibold text-slate-900 mb-2">Verified Reviews</h4>
-                  <p className="text-sm text-slate-600 flex-1">Authentic feedback only.</p>
+                  <h4 className="font-semibold text-slate-900 mb-2 rtl:flip">{t("cards.verifiedReviews.title")}</h4>
+                  <p className="text-sm text-slate-600 flex-1 rtl:flip">{t("cards.verifiedReviews.desc")}</p>
                 </div>
 
                 {/* Card 3 */}
-                <div className="group bg-white border border-slate-200 rounded-2xl p-5 md:p-6 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
+                <div className="group bg-white border border-slate-200 rounded-2xl p-5 md:p-6 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex flex-col h-full rtl:flip">
                   <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center mb-4 text-primary group-hover:scale-110 transition-transform duration-300">
-                    <Target className="h-5 w-5" />
+                    <Target className="h-5 w-5 rtl:flip" />
                   </div>
-                  <h4 className="font-semibold text-slate-900 mb-2">Stand Out</h4>
-                  <p className="text-sm text-slate-600 flex-1">Differentiate with objective data.</p>
+                  <h4 className="font-semibold text-slate-900 mb-2 rtl:flip">{t("cards.standOut.title")}</h4>
+                  <p className="text-sm text-slate-600 flex-1 rtl:flip">{t("cards.standOut.desc")}</p>
                 </div>
 
                 {/* Card 4 */}
-                <div className="group bg-white border border-slate-200 rounded-2xl p-5 md:p-6 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
+                <div className="group bg-white border border-slate-200 rounded-2xl p-5 md:p-6 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex flex-col h-full rtl:flip">
                   <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center mb-4 text-primary group-hover:scale-110 transition-transform duration-300">
-                    <ShieldCheck className="h-5 w-5" />
+                    <ShieldCheck className="h-5 w-5 rtl:flip" />
                   </div>
-                  <h4 className="font-semibold text-slate-900 mb-2">Privacy First</h4>
-                  <p className="text-sm text-slate-600 flex-1">Secure document handling.</p>
+                  <h4 className="font-semibold text-slate-900 mb-2 rtl:flip">{t("cards.privacyFirst.title")}</h4>
+                  <p className="text-sm text-slate-600 flex-1 rtl:flip">{t("cards.privacyFirst.desc")}</p>
                 </div>
                 
               </div>
@@ -106,18 +108,18 @@ export function FinalCTA() {
           </div>
 
           {/* Bottom Trust Row */}
-          <div className="mt-10 md:mt-12 pt-8 border-t border-slate-100 flex flex-wrap justify-center lg:justify-between gap-4 md:gap-6">
+          <div className="mt-10 md:mt-12 pt-8 border-t border-slate-100 flex flex-wrap justify-center lg:justify-between gap-4 md:gap-6 rtl:flip">
             <div className="flex items-center gap-2 text-sm font-medium text-slate-700">
-              <CheckCircle2 className="h-4 w-4 text-success" /> Verified Profiles
+              <CheckCircle2 className="h-4 w-4 text-success" /> <span className="rtl:flip">{t("features.verifiedProfiles")}</span>
             </div>
             <div className="flex items-center gap-2 text-sm font-medium text-slate-700">
-              <CheckCircle2 className="h-4 w-4 text-success" /> Independent Scoring
+              <CheckCircle2 className="h-4 w-4 text-success" /> <span className="rtl:flip">{t("features.independentScoring")}</span>
             </div>
             <div className="flex items-center gap-2 text-sm font-medium text-slate-700">
-              <CheckCircle2 className="h-4 w-4 text-success" /> Secure Privacy
+              <CheckCircle2 className="h-4 w-4 text-success" /> <span className="rtl:flip">{t("features.securePrivacy")}</span>
             </div>
             <div className="flex items-center gap-2 text-sm font-medium text-slate-700">
-              <CheckCircle2 className="h-4 w-4 text-success" /> Shareable URL
+              <CheckCircle2 className="h-4 w-4 text-success" /> <span className="rtl:flip">{t("features.shareableUrl")}</span>
             </div>
           </div>
 

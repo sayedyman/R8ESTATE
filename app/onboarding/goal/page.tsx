@@ -28,13 +28,21 @@ function GoalSelectionContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const isNew = searchParams.get("new") === "true"
-  const { selectedGoal, setGoal, isOnboardingCompleted, userMode, resetPreviewDraft } = useOnboardingStore()
+  const { selectedGoal, setGoal, isOnboardingCompleted, userMode, resetPreviewDraft, reset } = useOnboardingStore()
+
+  // Reset the onboarding flow if starting fresh
+  React.useEffect(() => {
+    if (isNew) {
+      reset()
+    }
+  }, [isNew, reset])
 
   React.useEffect(() => {
-    if (isOnboardingCompleted && userMode === "registered") {
+    // Only redirect if not starting fresh and they are already completed and registered
+    if (!isNew && isOnboardingCompleted && userMode === "registered") {
       router.replace(ROUTES.DASHBOARD)
     }
-  }, [isOnboardingCompleted, userMode, router])
+  }, [isNew, isOnboardingCompleted, userMode, router])
 
   const handleContinue = () => {
     if (selectedGoal) {
@@ -50,7 +58,7 @@ function GoalSelectionContent() {
   }
 
   // Avoid hydration mismatch or flashing if redirecting registered users
-  if (isOnboardingCompleted && userMode === "registered") return null
+  if (!isNew && isOnboardingCompleted && userMode === "registered") return null
 
   return (
     <motion.div 

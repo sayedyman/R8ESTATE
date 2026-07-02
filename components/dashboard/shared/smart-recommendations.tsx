@@ -4,18 +4,25 @@ import * as React from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Sparkles, ChevronRight, Zap, Target } from "lucide-react"
 import type { Recommendation, GoalProgress } from "@/types/dashboard"
+import { useRouter } from "next/navigation"
+import { ROUTES } from "@/constants/routes"
+import { useOnboardingStore } from "@/stores/onboarding-store"
 
 interface GoalStatusProps {
   goalTitle: string
   progress: GoalProgress
+  hasNoAnalytics?: boolean
 }
 
-function GoalStatusBlock({ goalTitle, progress }: GoalStatusProps) {
+function GoalStatusBlock({ goalTitle, progress, hasNoAnalytics = false }: GoalStatusProps) {
   const { metricLabel, currentRate, targetRate } = progress
-  const pct = targetRate > 0 ? Math.min(Math.round((currentRate / targetRate) * 100), 100) : 0
+  const displayRate = hasNoAnalytics ? 0 : currentRate
+  const pct = hasNoAnalytics ? 0 : (targetRate > 0 ? Math.min(Math.round((displayRate / targetRate) * 100), 100) : 0)
 
   let statusLine: string
-  if (currentRate >= targetRate) {
+  if (hasNoAnalytics) {
+    statusLine = `You've just created your Trust Card! Complete the actions below to start drawing traffic.`
+  } else if (currentRate >= targetRate) {
     statusLine = `You've reached your target — great work! 🎉`
   } else if (pct >= 80) {
     statusLine = `You're very close to reaching your goal.`
@@ -41,7 +48,7 @@ function GoalStatusBlock({ goalTitle, progress }: GoalStatusProps) {
         <div className="flex items-center justify-between text-xs text-slate-500 font-medium">
           <span>{metricLabel}</span>
           <span className="font-bold text-slate-700">
-            {currentRate}%{" "}
+            {displayRate}%{" "}
             <span className="font-normal text-slate-400">/ {targetRate}% target</span>
           </span>
         </div>
@@ -71,10 +78,72 @@ interface SmartRecommendationsProps {
   recommendations: Recommendation[]
   goalTitle?: string
   goalProgress?: GoalProgress
+  hasNoAnalytics?: boolean
 }
 
-export function SmartRecommendations({ recommendations, goalTitle, goalProgress }: SmartRecommendationsProps) {
-  if (!recommendations || recommendations.length === 0) return null
+export function SmartRecommendations({ recommendations, goalTitle, goalProgress, hasNoAnalytics = false }: SmartRecommendationsProps) {
+  const router = useRouter()
+  const { trustCardDraft } = useOnboardingStore()
+
+  const onboardingRecs: Recommendation[] = [
+    {
+      id: 101,
+      title: "Complete your profile",
+      description: "Finish all fields on your profile to achieve 100% completion and build stronger initial trust.",
+      impact: "High",
+      icon: "📝",
+      action: "Edit Profile",
+      priority: "High"
+    },
+    {
+      id: 102,
+      title: "Share your Trust Card",
+      description: "Distribute your public profile URL via email or social media to get your first views.",
+      impact: "High",
+      icon: "🔗",
+      action: "Share Link",
+      priority: "High"
+    },
+    {
+      id: 103,
+      title: "Add your professional achievement",
+      description: "Detailing an award or notable milestone makes your card stand out.",
+      impact: "Medium",
+      icon: "🏆",
+      action: "Add Achievement",
+      priority: "Medium"
+    },
+    {
+      id: 104,
+      title: "Upload a better profile photo",
+      description: "A high-quality, professional headshot increases contact conversions.",
+      impact: "Medium",
+      icon: "📷",
+      action: "Change Photo",
+      priority: "Medium"
+    }
+  ]
+
+  const displayRecommendations = hasNoAnalytics ? onboardingRecs : recommendations
+
+  if (!displayRecommendations || displayRecommendations.length === 0) return null
+
+  const getProfileUrl = () => {
+    const slug = trustCardDraft?.fullName 
+      ? trustCardDraft.fullName.toLowerCase().trim().replace(/[^\w\s-]/g, "").replace(/[\s_-]+/g, "-").replace(/^-+|-+$/g, "") 
+      : "profile"
+    return typeof window !== "undefined" ? `${window.location.origin}/u/${slug}` : `/u/${slug}`
+  }
+
+  const handleActionClick = (action: string) => {
+    if (action === "Share Link") {
+      const url = getProfileUrl()
+      navigator.clipboard.writeText(url)
+      alert("Public profile link copied to clipboard!")
+    } else {
+      router.push(`${ROUTES.PROFILE}?preview=true`)
+    }
+  }
 
   return (
     <Card className="bg-gradient-to-br from-indigo-50/50 via-white to-white border-indigo-100 overflow-hidden relative shadow-sm h-full">
@@ -92,11 +161,11 @@ export function SmartRecommendations({ recommendations, goalTitle, goalProgress 
 
         {/* Goal Status block — shown when goalProgress is available */}
         {goalProgress && goalTitle && (
-          <GoalStatusBlock goalTitle={goalTitle} progress={goalProgress} />
+          <GoalStatusBlock goalTitle={goalTitle} progress={goalProgress} hasNoAnalytics={hasNoAnalytics} />
         )}
 
         {/* Recommendation cards */}
-        {recommendations.map((rec) => {
+        {displayRecommendations.map((rec) => {
           const impactClass = impactColors[rec.impact] ?? "bg-slate-50 text-slate-600 border-slate-200"
           return (
             <div
@@ -126,7 +195,10 @@ export function SmartRecommendations({ recommendations, goalTitle, goalProgress 
                     Potential Impact: {rec.impact}
                   </span>
                 </div>
-                <button className="shrink-0 flex items-center bg-indigo-50 hover:bg-indigo-100 px-4 py-2 rounded-lg transition-colors border border-indigo-100">
+                <button 
+                  onClick={() => handleActionClick(rec.action)}
+                  className="shrink-0 flex items-center bg-indigo-50 hover:bg-indigo-100 px-4 py-2 rounded-lg transition-colors border border-indigo-100 cursor-pointer"
+                >
                   <span className="text-sm font-bold text-indigo-700 mr-1">
                     {rec.action}
                   </span>

@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { WizardNavigation } from "@/components/onboarding/wizard-navigation"
+import { useTranslations } from "next-intl"
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const currentYear = new Date().getFullYear();
@@ -19,6 +20,7 @@ const parseDate = (dateStr: string) => {
 
 export function ExperienceStep() {
   const { trustCardDraft, updateDraft, nextStep, previousStep } = useOnboardingStore()
+  const t = useTranslations("onboarding.wizard")
 
   const experience = trustCardDraft.experience || {
     jobTitle: "",
@@ -50,7 +52,7 @@ export function ExperienceStep() {
     <form onSubmit={handleNext} className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <div className="space-y-2 md:col-span-2">
-          <Label htmlFor="expJobTitle">Job Title</Label>
+          <Label htmlFor="expJobTitle">{t("jobTitle")}</Label>
           <Input 
             id="expJobTitle" 
             value={experience.jobTitle}
@@ -60,7 +62,7 @@ export function ExperienceStep() {
           />
         </div>
         <div className="space-y-2 md:col-span-2">
-          <Label htmlFor="expCompany">Company</Label>
+          <Label htmlFor="expCompany">{t("company")}</Label>
           <Input 
             id="expCompany" 
             value={experience.company}
@@ -70,7 +72,7 @@ export function ExperienceStep() {
           />
         </div>
         <div className="space-y-2 md:col-span-2">
-          <Label>Start Date</Label>
+          <Label>{t("startDate")}</Label>
           <div className="flex gap-3">
             <select 
               className="flex h-10 w-36 items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
@@ -78,8 +80,8 @@ export function ExperienceStep() {
               onChange={(e) => handleChange("startDate", `${e.target.value} ${start.year}`.trim())}
               required
             >
-              <option value="" disabled>Month</option>
-              {MONTHS.map(m => <option key={m} value={m}>{m}</option>)}
+              <option value="" disabled>{t("month")}</option>
+              {MONTHS.map(m => <option key={m} value={m}>{t(`months.${m}`)}</option>)}
             </select>
             <select 
               className="flex h-10 w-36 items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
@@ -87,13 +89,13 @@ export function ExperienceStep() {
               onChange={(e) => handleChange("startDate", `${start.month} ${e.target.value}`.trim())}
               required
             >
-              <option value="" disabled>Year</option>
+              <option value="" disabled>{t("year")}</option>
               {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
             </select>
           </div>
         </div>
         <div className="space-y-2 md:col-span-2">
-          <Label>End Date</Label>
+          <Label>{t("endDate")}</Label>
           <div className="flex flex-wrap items-center gap-3">
             <select 
               className="flex h-10 w-36 items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
@@ -102,8 +104,8 @@ export function ExperienceStep() {
               disabled={isPresent}
               required={!isPresent}
             >
-              <option value="" disabled>Month</option>
-              {MONTHS.map(m => <option key={m} value={m}>{m}</option>)}
+              <option value="" disabled>{t("month")}</option>
+              {MONTHS.map(m => <option key={m} value={m}>{t(`months.${m}`)}</option>)}
             </select>
             <select 
               className="flex h-10 w-36 items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
@@ -112,7 +114,7 @@ export function ExperienceStep() {
               disabled={isPresent}
               required={!isPresent}
             >
-              <option value="" disabled>Year</option>
+              <option value="" disabled>{t("year")}</option>
               {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
             </select>
             <div className="flex items-center gap-2 ml-2">
@@ -123,12 +125,12 @@ export function ExperienceStep() {
                 onChange={(e) => handleChange("endDate", e.target.checked ? "Present" : "")} 
                 className="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary accent-primary"
               />
-              <Label htmlFor="present" className="text-sm font-normal cursor-pointer m-0">Present</Label>
+              <Label htmlFor="present" className="text-sm font-normal cursor-pointer m-0">{t("present")}</Label>
             </div>
           </div>
         </div>
         <div className="space-y-2 md:col-span-2">
-          <Label htmlFor="expDescription">Short Description (Optional)</Label>
+          <Label htmlFor="expDescription">{t("shortDescription")}</Label>
           <Textarea 
             id="expDescription" 
             value={experience.description}

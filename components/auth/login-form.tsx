@@ -14,6 +14,7 @@ import { AuthCard, AuthHeader } from "./auth-card"
 import { PasswordInput } from "./password-input"
 import { GoogleButton } from "./google-button"
 import { LoadingButton } from "./loading-button"
+import { useTranslations } from "next-intl"
 
 import {
   Form,
@@ -35,6 +36,7 @@ export function LoginForm() {
   const { savePreviewToPermanent } = useOnboardingStore()
   const [error, setError] = React.useState<string | null>(null)
   const [isSuccess, setIsSuccess] = React.useState(false)
+  const t = useTranslations("auth")
 
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -67,8 +69,8 @@ export function LoginForm() {
   return (
     <AuthCard>
       <AuthHeader 
-        title="Welcome back" 
-        subtitle="Sign in to your account to continue" 
+        title={t("loginTitle")} 
+        subtitle={t("loginSubtitle")} 
       />
 
       {error && (
@@ -81,7 +83,7 @@ export function LoginForm() {
       {isSuccess && (
         <Alert className="mb-6 bg-success/15 text-success border-success/20">
           <CheckCircle2 className="h-4 w-4 text-success" />
-          <AlertDescription>Login successful. Redirecting...</AlertDescription>
+          <AlertDescription>{t("loginSuccess")}</AlertDescription>
         </Alert>
       )}
 
@@ -92,7 +94,7 @@ export function LoginForm() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email Address</FormLabel>
+                <FormLabel>{t("email")}</FormLabel>
                 <FormControl>
                   <Input 
                     placeholder="you@example.com" 
@@ -113,12 +115,12 @@ export function LoginForm() {
             render={({ field }) => (
               <FormItem>
                 <div className="flex items-center justify-between">
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel>{t("password")}</FormLabel>
                   <Link 
                     href={ROUTES.FORGOT_PASSWORD} 
                     className="text-xs font-semibold text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
                   >
-                    Forgot password?
+                    {t("forgotPassword")}
                   </Link>
                 </div>
                 <FormControl>
@@ -148,7 +150,7 @@ export function LoginForm() {
                 </FormControl>
                 <div className="space-y-1 leading-none">
                   <FormLabel className="text-sm font-normal cursor-pointer text-slate-600">
-                    Remember me for 30 days
+                    {t("rememberMe")}
                   </FormLabel>
                 </div>
               </FormItem>
@@ -161,7 +163,7 @@ export function LoginForm() {
             isLoading={form.formState.isSubmitting}
             disabled={isSuccess}
           >
-            {form.formState.isSubmitting ? "Signing in..." : "Sign In"}
+            {form.formState.isSubmitting ? t("signingIn") : t("signIn")}
           </LoadingButton>
         </form>
       </Form>
@@ -171,19 +173,21 @@ export function LoginForm() {
           <span className="w-full border-t border-slate-200" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-white px-2 text-slate-500 font-medium">Or continue with</span>
+          <span className="bg-white px-2 text-slate-500 font-medium">{t("orContinueWith")}</span>
         </div>
       </div>
 
-      <GoogleButton disabled={form.formState.isSubmitting || isSuccess} />
+      <GoogleButton disabled={form.formState.isSubmitting || isSuccess}>
+        {t("continueWithGoogle")}
+      </GoogleButton>
 
       <p className="text-center text-sm text-slate-500 mt-8">
-        Don't have an account?{" "}
+        {t("noAccount")}{" "}
         <Link 
           href={ROUTES.SIGNUP} 
-          className="font-semibold text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+          className="font-semibold text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm rtl:flip"
         >
-          Create Account
+          {t("signUp")}
         </Link>
       </p>
     </AuthCard>

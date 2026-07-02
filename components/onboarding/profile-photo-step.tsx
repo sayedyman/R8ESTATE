@@ -6,10 +6,12 @@ import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Upload, X } from "lucide-react"
 import { WizardNavigation } from "@/components/onboarding/wizard-navigation"
+import { useTranslations } from "next-intl"
 
 export function ProfilePhotoStep() {
   const { trustCardDraft, updateDraft, nextStep, previousStep } = useOnboardingStore()
   const fileInputRef = React.useRef<HTMLInputElement>(null)
+  const t = useTranslations("onboarding.wizard")
 
   const handleNext = (e: React.FormEvent) => {
     e.preventDefault()
@@ -28,8 +30,8 @@ export function ProfilePhotoStep() {
     <form onSubmit={handleNext} className="space-y-8">
       <div className="flex flex-col items-center justify-center space-y-6 pt-4">
         <div className="text-center space-y-1">
-          <p className="text-sm font-medium text-slate-700">A professional profile photo helps build trust.</p>
-          <p className="text-xs text-slate-500">Supported formats: JPG, PNG, WebP.</p>
+          <p className="text-sm font-medium text-slate-700">{t("profilePhotoMsg")}</p>
+          <p className="text-xs text-slate-500">{t("supportedFormats")}</p>
         </div>
         
         <div className="relative group">
@@ -47,7 +49,7 @@ export function ProfilePhotoStep() {
               className="text-white hover:text-white hover:bg-white/20"
               onClick={() => fileInputRef.current?.click()}
             >
-              {trustCardDraft.profilePhoto ? "Replace" : "Upload"}
+              {trustCardDraft.profilePhoto ? t("replacePhoto") : t("uploadPhoto")}
             </Button>
           </div>
           

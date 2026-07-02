@@ -6,9 +6,11 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { WizardNavigation } from "@/components/onboarding/wizard-navigation"
+import { useTranslations } from "next-intl"
 
 export function AchievementStep() {
   const { trustCardDraft, updateDraft, nextStep, previousStep } = useOnboardingStore()
+  const t = useTranslations("onboarding.wizard")
 
   const achievement = trustCardDraft.achievement || {
     title: "",
@@ -33,7 +35,7 @@ export function AchievementStep() {
     <form onSubmit={handleNext} className="space-y-6">
       <div className="grid grid-cols-1 gap-5">
         <div className="space-y-2">
-          <Label htmlFor="achTitle">Achievement Title</Label>
+          <Label htmlFor="achTitle">{t("achievementTitle")}</Label>
           <Input 
             id="achTitle" 
             value={achievement.title}
@@ -44,7 +46,7 @@ export function AchievementStep() {
         </div>
         
         <div className="space-y-2">
-          <Label htmlFor="achDescription">Short Description</Label>
+          <Label htmlFor="achDescription">{t("shortDescription")}</Label>
           <Textarea 
             id="achDescription" 
             value={achievement.description}

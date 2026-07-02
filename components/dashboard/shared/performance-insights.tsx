@@ -7,14 +7,32 @@ import type { InsightCard } from "@/types/dashboard"
 
 interface PerformanceInsightsProps {
   insights: InsightCard[]
+  hasNoAnalytics?: boolean
 }
 
-export function PerformanceInsights({ insights }: PerformanceInsightsProps) {
-  if (!insights || insights.length === 0) return null
+export function PerformanceInsights({ insights, hasNoAnalytics = false }: PerformanceInsightsProps) {
+  const onboardingInsights: InsightCard[] = [
+    {
+      id: "obs-1",
+      title: "Biggest Opportunity",
+      content: "Start sharing your profile. Your trust score is ready to help you convert leads.",
+      isPositive: true
+    },
+    {
+      id: "obs-2",
+      title: "Visitor Behavior",
+      content: "Views, clicks, and conversion rates will appear here once visitors start visiting your profile.",
+      isPositive: undefined
+    }
+  ]
+
+  const displayInsights = hasNoAnalytics ? onboardingInsights : insights
+
+  if (!displayInsights || displayInsights.length === 0) return null
 
   return (
     <div className="grid grid-cols-2 gap-4">
-      {insights.map((insight) => {
+      {displayInsights.map((insight) => {
         const isPositive = insight.isPositive
         const borderColor =
           isPositive === false

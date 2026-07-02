@@ -30,6 +30,11 @@ export interface TrustCardDraft {
   phoneNumber: string
   experience: Experience | null
   achievement: Achievement | null
+  trustScore?: number
+  profileCompletion?: number
+  verificationStatus?: string
+  id?: string
+  userId?: string
 }
 
 const defaultTrustCardDraft: TrustCardDraft = {
@@ -46,6 +51,11 @@ const defaultTrustCardDraft: TrustCardDraft = {
   phoneNumber: '',
   experience: null,
   achievement: null,
+  trustScore: 0,
+  profileCompletion: 0,
+  verificationStatus: 'Pending',
+  id: undefined,
+  userId: undefined,
 }
 
 export interface OnboardingState {

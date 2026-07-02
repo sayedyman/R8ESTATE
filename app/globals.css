@@ -137,3 +137,54 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* ── Arabic Font ───────────────────────────────────────────────────── */
+@theme inline {
+  --font-arabic: var(--font-arabic);
+}
+
+.font-arabic {
+  font-family: var(--font-arabic), var(--font-sans), sans-serif;
+  letter-spacing: 0;
+  line-height: 1.8;
+}
+
+/* ── RTL Layout Overrides ──────────────────────────────────────────── */
+
+/* Flip directional spacing so Tailwind ml-* / mr-* don't need manual overrides */
+[dir="rtl"] .rtl\:flip {
+  transform: scaleX(-1);
+}
+
+/* Sidebar: in RTL push to the right by reversing flex order */
+[dir="rtl"] [data-sidebar] {
+  order: 1;
+}
+
+/* Ensure start/end utilities work correctly — Tailwind v4 uses logical properties */
+/* Most direction-sensitive layout is handled automatically via logical properties (ms-, me-, ps-, pe-) */
+
+/* Text alignment defaults in RTL */
+[dir="rtl"] .text-start {
+  text-align: right;
+}
+[dir="rtl"] .text-end {
+  text-align: left;
+}
+
+/* Accordion chevron flip in RTL */
+[dir="rtl"] [data-slot="accordion-trigger"] svg {
+  transform: scaleX(-1);
+}
+
+/* Arabic typography refinements */
+[dir="rtl"] body {
+  word-spacing: 0.05em;
+}
+
+[dir="rtl"] h1,
+[dir="rtl"] h2,
+[dir="rtl"] h3,
+[dir="rtl"] h4 {
+  line-height: 1.5;
+}

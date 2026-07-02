@@ -4,26 +4,16 @@ import * as React from "react"
 import { Container } from "@/components/ui/container"
 import { SectionTitle } from "@/components/ui/section-title"
 import { motion } from "framer-motion"
+import { useTranslations } from "next-intl"
 
 const steps = [
-  {
-    num: "1",
-    title: "Create Your Trust Card",
-    description: "Add your professional information in just a few simple steps.",
-  },
-  {
-    num: "2",
-    title: "Build Trust",
-    description: "Show your experience, social links, and professional identity.",
-  },
-  {
-    num: "3",
-    title: "Share With Clients",
-    description: "Share your Trust Card with clients and make a strong first impression before the first conversation.",
-  }
+  { num: "1", key: "1" },
+  { num: "2", key: "2" },
+  { num: "3", key: "3" }
 ]
 
 export function HowItWorks() {
+  const t = useTranslations("howItWorks")
   return (
     <section id="how-it-works" className="py-20 md:py-28 bg-muted/30">
       <Container>
@@ -35,8 +25,8 @@ export function HowItWorks() {
           className="mb-16"
         >
           <SectionTitle 
-            title="How Trust is Established"
-            subtitle="Our verification process is designed to help you build a professional, trustworthy reputation in four simple steps."
+            title={t("sectionTitle")}
+            subtitle={t("sectionSubtitle")}
           />
         </motion.div>
 
@@ -57,8 +47,8 @@ export function HowItWorks() {
                 <div className="z-10 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground text-xl font-bold mb-6 shadow-md border-4 border-background ring-2 ring-primary/20">
                   {step.num}
                 </div>
-                <h3 className="text-lg font-semibold mb-2">{step.title}</h3>
-                <p className="text-sm text-muted-foreground">{step.description}</p>
+                <h3 className="text-lg font-semibold mb-2">{t(`steps.${step.key}.title`)}</h3>
+                <p className="text-sm text-muted-foreground">{t(`steps.${step.key}.description`)}</p>
               </motion.div>
             ))}
           </div>

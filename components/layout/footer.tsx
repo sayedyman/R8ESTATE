@@ -3,8 +3,10 @@ import * as React from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { Container } from "@/components/ui/container"
+import { useTranslations } from "next-intl"
 
 export function Footer() {
+  const t = useTranslations("footer")
   const [logoError, setLogoError] = React.useState(false)
 
   return (
@@ -41,37 +43,37 @@ export function Footer() {
               </div>
             </Link>
             <p className="text-sm text-muted-foreground mb-4">
-              The professional trust platform for real estate agents. Earn client confidence through verified transparency.
+              {t("tagline")}
             </p>
           </div>
           <div>
-            <h4 className="font-semibold mb-4">Product</h4>
+            <h4 className="font-semibold mb-4">{t("product")}</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link href="#features" className="hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm">Features</Link></li>
-              <li><Link href="#trust-score" className="hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm">Trust Score</Link></li>
-              <li><Link href="#how-it-works" className="hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm">How it Works</Link></li>
-              <li><Link href="#pricing" className="hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm">Pricing</Link></li>
+              <li><Link href="#features" className="hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm">{t("features")}</Link></li>
+              <li><Link href="#trust-score" className="hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm">{t("trustScore")}</Link></li>
+              <li><Link href="#how-it-works" className="hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm">{t("howItWorks")}</Link></li>
+              <li><Link href="#pricing" className="hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm">{t("pricing")}</Link></li>
             </ul>
           </div>
           <div>
-            <h4 className="font-semibold mb-4">Company</h4>
+            <h4 className="font-semibold mb-4">{t("company")}</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link href="#about" className="hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm">About</Link></li>
-              <li><Link href="#contact" className="hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm">Contact</Link></li>
-              <li><Link href="#blog" className="hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm">Blog</Link></li>
-              <li><Link href="#careers" className="hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm">Careers</Link></li>
+              <li><Link href="#about" className="hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm">{t("about")}</Link></li>
+              <li><Link href="#contact" className="hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm">{t("contact")}</Link></li>
+              <li><Link href="#blog" className="hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm">{t("blog")}</Link></li>
+              <li><Link href="#careers" className="hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm">{t("careers")}</Link></li>
             </ul>
           </div>
           <div>
-            <h4 className="font-semibold mb-4">Legal</h4>
+            <h4 className="font-semibold mb-4">{t("legal")}</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link href="#privacy" className="hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm">Privacy Policy</Link></li>
-              <li><Link href="#terms" className="hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm">Terms of Service</Link></li>
+              <li><Link href="#privacy" className="hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm">{t("privacy")}</Link></li>
+              <li><Link href="#terms" className="hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm">{t("terms")}</Link></li>
             </ul>
           </div>
         </div>
         <div className="mt-12 pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
-          <p>© {new Date().getFullYear()} R8ESTATE. All rights reserved.</p>
+          <p>{t("copyright", { year: new Date().getFullYear() })}</p>
           <div className="flex items-center gap-4">
             <Link href="#" className="hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm">Twitter</Link>
             <Link href="#" className="hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm">LinkedIn</Link>

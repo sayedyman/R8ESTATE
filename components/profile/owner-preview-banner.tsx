@@ -9,9 +9,15 @@ import { Linkedin, Facebook, Twitter } from "@/components/ui/social-icons"
 import { useOnboardingStore } from "@/stores/onboarding-store"
 import { motion, AnimatePresence } from "framer-motion"
 import { generateSlug } from "@/hooks/use-public-trust-card"
+import { useSession } from "next-auth/react"
+import { TrustCardService } from "@/lib/services/trust-card.service"
+import { UserService } from "@/lib/services/user.service"
+import { useTranslations } from "next-intl"
 
 export function OwnerPreviewBanner() {
   const router = useRouter()
+  const { data: session } = useSession()
+  const t = useTranslations("profile")
   const { isInlineEditing, tempDraft, setInlineEditing, setTempDraft, updateDraft, trustCardDraft, savedTrustCard, userMode } = useOnboardingStore()
   const [toastMessage, setToastMessage] = React.useState("")
   const [isShareOpen, setIsShareOpen] = React.useState(false)
@@ -22,10 +28,34 @@ export function OwnerPreviewBanner() {
     setInlineEditing(true)
   }
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (tempDraft) {
       updateDraft(tempDraft)
-      showToast("Your Trust Card has been updated successfully.")
+      
+      if (session?.user?.id) {
+        try {
+          const trustCardService = new TrustCardService()
+          const existingCard = await trustCardService.getTrustCardByUserId(session.user.id)
+          if (existingCard) {
+            // Update existing Trust Card record
+            await trustCardService.updateTrustCard(existingCard.id, {
+              ...tempDraft,
+              selected_goal: useOnboardingStore.getState().selectedGoal
+            } as any)
+
+            // Also update base user fields
+            const userService = new UserService()
+            await userService.updateUser(session.user.id, {
+              full_name: tempDraft.fullName,
+              avatar_url: tempDraft.profilePhoto
+            })
+          }
+        } catch (err) {
+          console.error("Error saving edits to Supabase:", err)
+        }
+      }
+      
+      showToast(t("ownerBanner.updateSuccess"))
     }
     setInlineEditing(false)
     setTempDraft(null)
@@ -53,7 +83,7 @@ export function OwnerPreviewBanner() {
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(getUrl())
-    showToast("Link copied successfully.")
+    showToast(t("ownerBanner.copySuccess"))
   }
 
   const shareLinks = {
@@ -66,73 +96,70 @@ export function OwnerPreviewBanner() {
 
   return (
     <>
-      <div className="w-full bg-slate-900 text-white shadow-md z-40 sticky top-0">
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 py-5 flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-8">
-          <div className="flex items-start gap-4">
-            <div className="bg-blue-500/20 p-2.5 rounded-xl mt-0.5 shrink-0">
-              <Info className="h-5 w-5 text-blue-400" />
-            </div>
-            <div>
-              <h3 className="font-bold text-base">
-                {isInlineEditing ? "Edit Mode" : "This is how clients will see your Trust Card"}
-              </h3>
-              <p className="text-slate-300 text-[15px] mt-0.5">
-                {isInlineEditing 
-                  ? "Make changes below and click Save Changes when you're done."
-                  : "Your Trust Card has been published successfully. You can share it now or update it anytime."}
-              </p>
-            </div>
+      <div className="w-full bg-slate-900 border-b border-slate-800 text-white px-4 sm:px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 sticky top-0 z-40 rtl:flip">
+        <div className="flex items-start sm:items-center gap-3">
+          <div className="h-10 w-10 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0 border border-emerald-500/30">
+            <CheckCircle2 className="h-5 w-5 text-emerald-400" />
           </div>
-          
-          <div className="flex flex-wrap items-center gap-3 sm:gap-4 w-full lg:w-auto shrink-0 justify-end">
-            {!isInlineEditing ? (
-              <>
-                <Button 
-                  variant="ghost" 
-                  className="h-10 px-5 text-slate-300 hover:text-white hover:bg-white/10 hidden sm:flex gap-2 font-medium"
-                  onClick={handleCopyLink}
-                >
-                  <LinkIcon className="h-4 w-4" />
-                  <span>Copy Link</span>
-                </Button>
-                
-                <Button 
-                  variant="secondary" 
-                  className="h-10 px-5 bg-white/10 text-white hover:bg-white/20 border-0 flex-1 sm:flex-none gap-2 font-medium"
-                  onClick={handleShare}
-                >
-                  <Share2 className="h-4 w-4" />
-                  Share Link
-                </Button>
-                
-                <Button 
-                  className="h-10 px-5 bg-white text-slate-900 hover:bg-slate-100 flex-1 sm:flex-none gap-2 font-semibold shadow-sm"
-                  onClick={handleEdit}
-                >
-                  <Edit className="h-4 w-4" />
-                  Edit Trust Card
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button 
-                  variant="ghost" 
-                  className="h-10 px-5 text-slate-300 hover:text-white hover:bg-white/10 flex-1 sm:flex-none gap-2 font-medium"
-                  onClick={handleCancel}
-                >
-                  <X className="h-4 w-4" />
-                  Cancel
-                </Button>
-                <Button 
-                  className="h-10 px-5 bg-white text-slate-900 hover:bg-slate-100 flex-1 sm:flex-none gap-2 font-semibold shadow-sm"
-                  onClick={handleSave}
-                >
-                  <CheckCircle2 className="h-4 w-4" />
-                  Save Changes
-                </Button>
-              </>
-            )}
+          <div>
+            <p className="font-semibold text-[15px]">{t("ownerBanner.title")}</p>
+            <p className="text-xs text-slate-400 mt-0.5">{t("ownerBanner.subtitle")}</p>
           </div>
+        </div>
+        
+        <div className="flex items-center gap-2.5 sm:ml-auto">
+          {!isInlineEditing ? (
+            <>
+              <Button 
+                size="sm"
+                variant="ghost" 
+                className="h-9 text-slate-300 hover:text-white hover:bg-white/10 hidden sm:flex gap-2"
+                onClick={handleCopyLink}
+              >
+                <LinkIcon className="h-4 w-4" />
+                {t("ownerBanner.copyLink")}
+              </Button>
+              
+              <Button 
+                size="sm" 
+                variant="outline" 
+                className="h-9 bg-white/10 hover:bg-white/20 text-white border-0"
+                onClick={handleEdit}
+              >
+                <Edit className="h-4 w-4 mr-1.5 rtl:ml-1.5 rtl:mr-0" />
+                {t("ownerBanner.editTrustCard")}
+              </Button>
+              
+              <Button 
+                size="sm" 
+                className="h-9 bg-emerald-500 hover:bg-emerald-600 text-white border-0"
+                onClick={handleShare}
+              >
+                <Share2 className="h-4 w-4 mr-1.5 rtl:ml-1.5 rtl:mr-0" />
+                {t("ownerBanner.shareLink")}
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button 
+                size="sm"
+                variant="ghost" 
+                className="h-9 text-slate-300 hover:text-white hover:bg-white/10"
+                onClick={handleCancel}
+              >
+                <X className="h-4 w-4 mr-1.5" />
+                {t("ownerBanner.cancel")}
+              </Button>
+              <Button 
+                size="sm"
+                className="h-9 bg-white text-slate-900 hover:bg-slate-100"
+                onClick={handleSave}
+              >
+                <CheckCircle2 className="h-4 w-4 mr-1.5" />
+                {t("ownerBanner.saveChanges")}
+              </Button>
+            </>
+          )}
         </div>
       </div>
 
@@ -140,7 +167,7 @@ export function OwnerPreviewBanner() {
       {toastMessage && (
         <div className="fixed bottom-4 right-4 z-50 animate-in slide-in-from-bottom-5">
           <div className="bg-slate-900 text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-3 border border-slate-700">
-            <CheckCircle2 className="h-5 w-5 text-success" />
+            <CheckCircle2 className="h-5 w-5 text-emerald-400" />
             <span className="font-medium text-sm">{toastMessage}</span>
           </div>
         </div>
@@ -167,13 +194,6 @@ export function OwnerPreviewBanner() {
               className="relative bg-white rounded-[32px] shadow-2xl w-full max-w-[420px] pt-12 pb-8 px-8 text-center"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Floating Icon */}
-              <div className="absolute -top-8 left-1/2 -translate-x-1/2 w-16 h-16 bg-white rounded-full shadow-lg border border-slate-100 flex items-center justify-center">
-                <div className="w-12 h-12 bg-slate-50 rounded-full flex items-center justify-center">
-                  <LinkIcon className="h-5 w-5 text-slate-700" />
-                </div>
-              </div>
-
               {/* Close Button */}
               <button 
                 onClick={() => setIsShareOpen(false)} 
@@ -183,13 +203,11 @@ export function OwnerPreviewBanner() {
               </button>
 
               {/* Header */}
-              <h3 className="font-extrabold text-[22px] text-slate-900 mb-3 tracking-tight">Share Your Trust Card</h3>
-              <p className="text-slate-500 text-[15px] leading-relaxed mb-8 max-w-[300px] mx-auto">
-                Share your professional Trust Card with clients, colleagues, or anyone you'd like to build trust with.
-              </p>
+              <h3 className="text-xl font-bold text-slate-900 pr-8">{t("share.title")}</h3>
+              <p className="text-sm text-slate-500 mt-1">{t("share.subtitle")}</p>
 
               {/* Link Input Section */}
-              <div className="relative flex items-center w-full mb-8 group">
+              <div className="relative flex items-center w-full mt-8 mb-8 group">
                 <input 
                   type="text" 
                   readOnly 
@@ -206,10 +224,12 @@ export function OwnerPreviewBanner() {
               </div>
 
               {/* Divider */}
-              <div className="flex items-center gap-4 mb-8">
-                <div className="h-px bg-slate-100 flex-1"></div>
-                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">or share directly</span>
-                <div className="h-px bg-slate-100 flex-1"></div>
+              <div className="flex items-center gap-3 mb-8 rtl:flip">
+                <div className="h-px bg-slate-100 flex-1" />
+                <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">
+                  {t("share.shareVia")}
+                </span>
+                <div className="h-px bg-slate-100 flex-1" />
               </div>
 
               {/* Social Buttons */}

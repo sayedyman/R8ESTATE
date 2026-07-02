@@ -6,63 +6,78 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
-import { Link } from "lucide-react"
+import { FileText } from "lucide-react"
 import { WizardNavigation } from "@/components/onboarding/wizard-navigation"
+import { CvImportModal } from "@/components/onboarding/cv-import-modal"
+import { AnimatePresence } from "framer-motion"
+import { useTranslations } from "next-intl"
 
 export function ProfileInformationStep() {
+  const t = useTranslations("onboarding.wizard")
   const { trustCardDraft, updateDraft, nextStep, previousStep } = useOnboardingStore()
   const [isManual, setIsManual] = React.useState(!!trustCardDraft.fullName)
+  const [showCvModal, setShowCvModal] = React.useState(false)
 
   const handleNext = (e: React.FormEvent) => {
     e.preventDefault()
     nextStep()
   }
 
-  const handleLinkedInImport = () => {
-    // Mock LinkedIn import mapping
-    updateDraft({
-      fullName: "Jonathan Davis",
-      jobTitle: "Senior Property Consultant",
-      company: "Elite Realty",
-      yearsOfExperience: "8",
-      shortBio: "Specializing in luxury properties and investment advisory with a proven track record of successful negotiations.",
-      linkedIn: "https://linkedin.com/in/jonathandavis",
-      profilePhoto: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=256"
-    })
+  const handleCVImportClick = () => {
+    setShowCvModal(true)
+  }
+
+  const handleCvSuccess = () => {
+    setShowCvModal(false)
     setIsManual(true)
   }
 
   if (!isManual) {
     return (
       <div className="space-y-8 flex flex-col items-center justify-center py-10">
+        {/* CV Import Modal */}
+        <AnimatePresence>
+          {showCvModal && (
+            <CvImportModal
+              onClose={() => setShowCvModal(false)}
+              onSuccess={handleCvSuccess}
+            />
+          )}
+        </AnimatePresence>
+
         <div className="text-center space-y-3">
-          <h3 className="text-2xl font-bold text-slate-900">Complete your profile faster</h3>
+          <h3 className="text-2xl font-bold text-slate-900">{t("importTitle")}</h3>
           <p className="text-slate-500 text-sm max-w-sm mx-auto">
-            Import your details directly from LinkedIn. You can review and edit everything before publishing.
+            {t("importSubtitle")}
           </p>
         </div>
         
         <Button 
-          onClick={handleLinkedInImport} 
+          onClick={handleCVImportClick} 
           size="lg" 
-          className="w-full max-w-sm flex items-center gap-2 bg-[#0077b5] hover:bg-[#006396] text-white shadow-md hover:shadow-lg transition-all hover:-translate-y-0.5 h-14"
+          className="w-full max-w-sm flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white shadow-md hover:shadow-lg transition-all hover:-translate-y-0.5 h-14"
         >
-          <Link className="h-5 w-5" />
-          Import from LinkedIn
+          <FileText className="h-5 w-5 rtl:flip" />
+          {t("importFromCv")}
         </Button>
         
-        <div className="flex items-center gap-4 w-full max-w-sm pt-2">
-          <div className="h-px bg-slate-200 flex-1"></div>
-          <span className="text-xs text-slate-400 uppercase tracking-wider font-semibold">Or</span>
-          <div className="h-px bg-slate-200 flex-1"></div>
+        <div className="relative w-full max-w-sm my-4">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t border-slate-200" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-white px-2 text-slate-400 font-medium">{t("or")}</span>
+          </div>
         </div>
 
-        <button 
+        <Button 
           onClick={() => setIsManual(true)}
-          className="text-sm font-semibold text-slate-500 hover:text-slate-900 transition-colors"
+          variant="outline"
+          size="lg"
+          className="w-full max-w-sm text-slate-600 h-14"
         >
-          Fill it manually
-        </button>
+          {t("fillManually")}
+        </Button>
         
         <div className="w-full mt-8">
           <WizardNavigation 
@@ -76,9 +91,9 @@ export function ProfileInformationStep() {
 
   return (
     <form onSubmit={handleNext} className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-2">
-          <Label htmlFor="fullName">Full Name</Label>
+          <Label htmlFor="fullName">{t("fullName")}</Label>
           <Input 
             id="fullName" 
             value={trustCardDraft.fullName}
@@ -88,7 +103,7 @@ export function ProfileInformationStep() {
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="jobTitle">Job Title</Label>
+          <Label htmlFor="jobTitle">{t("jobTitle")}</Label>
           <Input 
             id="jobTitle" 
             value={trustCardDraft.jobTitle}
@@ -98,7 +113,7 @@ export function ProfileInformationStep() {
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="company">Company</Label>
+          <Label htmlFor="company">{t("company")}</Label>
           <Input 
             id="company" 
             value={trustCardDraft.company}
@@ -107,7 +122,7 @@ export function ProfileInformationStep() {
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="yearsOfExperience">Years of Experience</Label>
+          <Label htmlFor="yearsOfExperience">{t("yearsOfExperience")}</Label>
           <Input 
             id="yearsOfExperience" 
             type="number"
@@ -118,8 +133,8 @@ export function ProfileInformationStep() {
             required
           />
         </div>
-        <div className="space-y-2 md:col-span-2">
-          <Label htmlFor="shortBio">Short Bio</Label>
+        <div className="space-y-2 col-span-full">
+          <Label htmlFor="shortBio">{t("shortBio")}</Label>
           <Textarea 
             id="shortBio" 
             value={trustCardDraft.shortBio}
@@ -129,8 +144,10 @@ export function ProfileInformationStep() {
             required
           />
         </div>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="space-y-2">
-          <Label htmlFor="linkedIn">LinkedIn URL (Optional)</Label>
+          <Label htmlFor="linkedIn">{t("linkedIn")}</Label>
           <Input 
             id="linkedIn" 
             type="url"
@@ -140,7 +157,7 @@ export function ProfileInformationStep() {
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="website">Website (Optional)</Label>
+          <Label htmlFor="website">{t("website")}</Label>
           <Input 
             id="website" 
             type="url"
@@ -149,8 +166,8 @@ export function ProfileInformationStep() {
             placeholder="https://..."
           />
         </div>
-        <div className="space-y-2 md:col-span-2">
-          <Label htmlFor="phoneNumber">Phone Number (Optional)</Label>
+        <div className="space-y-2">
+          <Label htmlFor="phoneNumber">{t("phoneNumber")}</Label>
           <Input 
             id="phoneNumber" 
             type="tel"

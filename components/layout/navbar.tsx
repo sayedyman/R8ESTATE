@@ -4,10 +4,12 @@ import Link from "next/link"
 import Image from "next/image"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Container } from "@/components/ui/container"
+import { useTranslations } from "next-intl"
+import { LanguageSwitcher } from "@/components/ui/language-switcher"
 
 import { ROUTES } from "@/constants/routes"
-
 export function Navbar() {
+  const t = useTranslations("nav")
   const [logoError, setLogoError] = React.useState(false)
   const [isVisible, setIsVisible] = React.useState(true)
   const lastScrollY = React.useRef(0)
@@ -78,15 +80,16 @@ export function Navbar() {
           </div>
         </Link>
         <nav className="hidden md:flex gap-6">
-          <Link href="#features" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm">Features</Link>
-          <Link href="#how-it-works" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm">How It Works</Link>
-          <Link href="#trust-score" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm">Trust Score</Link>
-          <Link href="#faq" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm">FAQ</Link>
+          <Link href="#features" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm">{t("features")}</Link>
+          <Link href="#how-it-works" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm">{t("howItWorks")}</Link>
+          <Link href="#trust-score" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm">{t("trustScore")}</Link>
+          <Link href="#faq" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm">{t("faq")}</Link>
         </nav>
-        <div className="flex items-center gap-4">
-          <Link href={ROUTES.LOGIN} className="text-sm font-medium text-muted-foreground hover:text-foreground hidden md:block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm px-2 py-1">Sign In</Link>
+        <div className="flex items-center gap-3">
+          <LanguageSwitcher />
+          <Link href={ROUTES.LOGIN} className="text-sm font-medium text-muted-foreground hover:text-foreground hidden md:block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm px-2 py-1">{t("signIn")}</Link>
           <Link href={`${ROUTES.ONBOARDING_GOAL}?new=true`} className={buttonVariants({ variant: "default" })}>
-            Create Trust Card
+            {t("createTrustCard")}
           </Link>
         </div>
       </Container>

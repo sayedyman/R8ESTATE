@@ -8,10 +8,14 @@ import { useOnboardingStore } from "@/stores/onboarding-store"
 import { ROUTES } from "@/constants/routes"
 import { Button } from "@/components/ui/button"
 import { TrustCardPreview } from "@/components/onboarding/trust-card-preview"
+import { useAuthSync } from "@/hooks/use-auth-sync"
 
 export default function SuccessPage() {
   const router = useRouter()
   const { trustCardDraft, completeOnboarding, isOnboardingCompleted, userMode } = useOnboardingStore()
+
+  // Automatically sync local onboarding draft to Supabase on login
+  useAuthSync()
 
   React.useEffect(() => {
     // If somehow they get here without filling basic info, redirect back
