@@ -6,10 +6,11 @@ import { useOnboardingStore } from "@/stores/onboarding-store"
 import { Shield, LayoutDashboard, BadgeCheck, ShieldCheck, Settings, LogOut, LifeBuoy } from "lucide-react"
 import { useDataHydration } from "@/hooks/use-data-hydration"
 import { useDashboardAnalytics } from "@/hooks/use-dashboard-analytics"
+import { useAuthSync } from "@/hooks/use-auth-sync"
+import { useSession, signOut } from "next-auth/react"
 import Link from "next/link"
 import { ROUTES } from "@/constants/routes"
 import dynamic from "next/dynamic"
-import { signOut } from "next-auth/react"
 import { useTranslations } from "next-intl"
 import { LanguageSwitcher } from "@/components/ui/language-switcher"
 
@@ -43,6 +44,13 @@ function DashboardContent() {
   // Load user data from Supabase on mount
   const { isHydrated } = useDataHydration()
 
+  // Sync guest draft to Supabase when a new user signs in via Google
+  const { isSyncing } = useAuthSync()
+
+  // Session — used to detect newly signed-in users whose onboarding isn't complete yet
+  const { data: session } = useSession()
+  const isNewUser = session?.user && !(session.user as any).isOnboardingCompleted
+
   // Fetch real Supabase aggregated metrics & insights
   const { analyticsConfig, isLoading: isAnalyticsLoading, hasNoAnalytics: hasNoRealAnalytics, userId } = useDashboardAnalytics()
 
@@ -51,16 +59,21 @@ function DashboardContent() {
   const [activeTab, setActiveTab] = React.useState("Overview")
 
   React.useEffect(() => {
-    if (!isHydrated) return
+    // Don't do anything while hydrating or while useAuthSync is saving a new user's draft
+    if (!isHydrated || isSyncing) return
+
+    // If a new user just signed in (isOnboardingCompleted=false in session) but is still
+    // in the process of being synced, hold off on any redirect
+    if (isNewUser) return
 
     if (useOnboardingStore.getState().userMode === "preview") {
       router.replace(ROUTES.PROFILE + "?preview=true")
       return
     }
     setMounted(true)
-  }, [router, isHydrated])
+  }, [router, isHydrated, isSyncing, isNewUser])
 
-  if (!isHydrated || !mounted || (isAnalyticsLoading && !isDemo)) {
+  if (!isHydrated || isSyncing || isNewUser || !mounted || (isAnalyticsLoading && !isDemo)) {
     return (
       <div className="flex items-center justify-center h-screen bg-slate-50 w-full">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>

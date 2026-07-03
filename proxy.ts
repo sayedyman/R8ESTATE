@@ -31,7 +31,10 @@ export async function proxy(request: NextRequest) {
       return NextResponse.redirect(loginUrl)
     }
 
-    if (!isOnboardingCompleted) {
+    // Allow authenticated users who haven't completed onboarding to reach /dashboard.
+    // useAuthSync runs on /dashboard and will persist the draft, then update isOnboardingCompleted.
+    // Only block access to other protected routes (settings, verification, etc.) for incomplete users.
+    if (!isOnboardingCompleted && pathname !== "/dashboard") {
       return NextResponse.redirect(new URL("/onboarding/goal", request.nextUrl.origin))
     }
   }
@@ -44,7 +47,9 @@ export async function proxy(request: NextRequest) {
     if (isOnboardingCompleted) {
       return NextResponse.redirect(new URL("/dashboard", request.nextUrl.origin))
     } else {
-      return NextResponse.redirect(new URL("/onboarding/goal", request.nextUrl.origin))
+      // Let authenticated-but-not-onboarded users through to /signup so they can
+      // trigger the Google Sign In flow which leads to /dashboard and useAuthSync.
+      return NextResponse.redirect(new URL("/dashboard", request.nextUrl.origin))
     }
   }
 
