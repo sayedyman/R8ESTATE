@@ -32,4 +32,5 @@ export const trustCardDraftSchema = z.object({
   verificationStatus: z.string().optional(),
   id: z.string().optional(),
   userId: z.string().optional(),
+  slug: z.string().optional(),
 });

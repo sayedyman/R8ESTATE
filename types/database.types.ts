@@ -52,6 +52,7 @@ export interface Database {
         Row: {
           id: string
           user_id: string
+          slug: string | null
           selected_goal: string | null
           full_name: string | null
           job_title: string | null
@@ -75,6 +76,7 @@ export interface Database {
         Insert: {
           id?: string
           user_id: string
+          slug?: string | null
           selected_goal?: string | null
           full_name?: string | null
           job_title?: string | null
@@ -98,6 +100,7 @@ export interface Database {
         Update: {
           id?: string
           user_id?: string
+          slug?: string | null
           selected_goal?: string | null
           full_name?: string | null
           job_title?: string | null
@@ -118,6 +121,7 @@ export interface Database {
           created_at?: string
           updated_at?: string
         }
+
         Relationships: [
           {
             foreignKeyName: "trust_cards_user_id_fkey"

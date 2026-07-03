@@ -14,10 +14,12 @@ export function QuickActions() {
   const [isShareOpen, setIsShareOpen] = React.useState(false)
 
   const getProfileUrl = () => {
-    const draft = trustCardDraft
-    const slug = draft?.fullName 
-      ? draft.fullName.toLowerCase().trim().replace(/[^\w\s-]/g, "").replace(/[\s_-]+/g, "-").replace(/^-+|-+$/g, "") 
-      : "profile"
+    const { savedTrustCard, trustCardDraft, userMode } = useOnboardingStore.getState()
+    const card = userMode === "registered" && savedTrustCard ? savedTrustCard : trustCardDraft
+    // Use the stored permanent slug; fall back to generating from fullName for guest previews only
+    const slug = card?.slug || (card?.fullName
+      ? card.fullName.toLowerCase().trim().replace(/[^\w\s-]/g, "").replace(/[\s_-]+/g, "-").replace(/^-+|-+$/g, "")
+      : "profile")
     return typeof window !== "undefined" ? `${window.location.origin}/u/${slug}` : `/u/${slug}`
   }
 

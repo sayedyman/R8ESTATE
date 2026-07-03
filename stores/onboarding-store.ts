@@ -35,6 +35,7 @@ export interface TrustCardDraft {
   verificationStatus?: string
   id?: string
   userId?: string
+  slug?: string
 }
 
 const defaultTrustCardDraft: TrustCardDraft = {
@@ -56,6 +57,7 @@ const defaultTrustCardDraft: TrustCardDraft = {
   verificationStatus: 'Pending',
   id: undefined,
   userId: undefined,
+  slug: undefined,
 }
 
 export interface OnboardingState {

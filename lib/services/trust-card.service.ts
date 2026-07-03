@@ -8,6 +8,20 @@ export type TrustCardInsert = Database['public']['Tables']['trust_cards']['Inser
 export type TrustCardUpdate = Database['public']['Tables']['trust_cards']['Update']
 
 /**
+ * Generates a URL-friendly, permanent slug from a full name.
+ * Lives in the service layer — never in React components.
+ */
+export function generateSlug(name: string): string {
+  if (!name) return ''
+  return name
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/[\s_-]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+}
+
+/**
  * Calculates a profile completion percentage based on filled fields.
  */
 export function calculateCompletion(draft: Partial<TrustCardDraft>): number {
@@ -74,6 +88,7 @@ export function mapRowToDraft(row: TrustCardRow): TrustCardDraft {
     verificationStatus: row.verification_status,
     id: row.id,
     userId: row.user_id,
+    slug: row.slug || undefined,
   }
 }
 
@@ -109,6 +124,10 @@ export function mapDraftToInsert(
   if (draft.phoneNumber !== undefined) insert.phone = draft.phoneNumber
   if (draft.experience !== undefined) insert.experience = draft.experience as any
   if (draft.achievement !== undefined) insert.achievement = draft.achievement as any
+  // Slug is always set during insert; once set it should not be overwritten
+  if (draft.fullName && !insert.slug) {
+    insert.slug = draft.slug || generateSlug(draft.fullName)
+  }
 
   return insert
 }
@@ -189,33 +208,21 @@ export class TrustCardService {
   }
 
   /**
-   * Fetches a trust card by its generated name slug.
+   * Fetches a trust card directly by its permanent slug column.
    */
   async getTrustCardBySlug(slug: string): Promise<TrustCardRow | null> {
-    const parts = slug.split('-')
-    let query = this.supabase.from('trust_cards').select('*')
-    if (parts.length > 0) {
-      query = query.ilike('full_name', `%${parts[0]}%`)
-    }
-    const { data, error } = await query
+    const { data, error } = await this.supabase
+      .from('trust_cards')
+      .select('*')
+      .eq('slug', slug)
+      .maybeSingle()
 
     if (error) {
       console.error(`Error fetching trust card by slug ${slug}:`, error.message)
       throw error
     }
 
-    const generateSlug = (name: string): string => {
-      if (!name) return ""
-      return name
-        .toLowerCase()
-        .trim()
-        .replace(/[^\w\s-]/g, "")
-        .replace(/[\s_-]+/g, "-")
-        .replace(/^-+|-+$/g, "")
-    }
-
-    const match = data?.find(row => generateSlug(row.full_name || '') === slug)
-    return match || null
+    return data
   }
 
   /**

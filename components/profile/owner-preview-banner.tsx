@@ -8,7 +8,7 @@ import { Edit, Share2, Link as LinkIcon, Info, X, CheckCircle2 } from "lucide-re
 import { useOnboardingStore } from "@/stores/onboarding-store"
 import { ShareModal } from "./share-modal"
 import { motion, AnimatePresence } from "framer-motion"
-import { generateSlug } from "@/hooks/use-public-trust-card"
+import { generateSlug } from "@/lib/services/trust-card.service"
 import { useSession } from "next-auth/react"
 import { TrustCardService } from "@/lib/services/trust-card.service"
 import { updateTrustCardAction } from "@/lib/actions/trust-card.actions"
@@ -73,7 +73,8 @@ export function OwnerPreviewBanner() {
 
   const getUrl = () => {
     const draft = userMode === "registered" && savedTrustCard ? savedTrustCard : trustCardDraft;
-    const slug = draft?.fullName ? generateSlug(draft.fullName) : "preview";
+    // Use the stored permanent slug; fall back to generating from fullName for guest previews only
+    const slug = draft?.slug || (draft?.fullName ? generateSlug(draft.fullName) : "preview");
     return `${window.location.origin}/u/${slug}`;
   }
 

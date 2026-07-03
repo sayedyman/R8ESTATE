@@ -2,26 +2,8 @@
 
 import * as React from "react"
 import { useOnboardingStore, TrustCardDraft } from "@/stores/onboarding-store"
+import { TrustCardService, mapRowToDraft, generateSlug } from "@/lib/services/trust-card.service"
 
-/**
- * Utility to generate a URL-friendly slug from a name
- */
-export function generateSlug(name: string): string {
-  if (!name) return ""
-  return name
-    .toLowerCase()
-    .trim()
-    .replace(/[^\w\s-]/g, "")
-    .replace(/[\s_-]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-}
-
-/**
- * Hook to retrieve the public trust card data based on the requested slug.
- * In a real backend, this would fetch from an API: `fetch(/api/users/${slug})`.
- * For the MVP, it hydrates from the local onboarding store.
- */
-import { TrustCardService, mapRowToDraft } from "@/lib/services/trust-card.service"
 
 export function usePublicTrustCard(requestedSlug: string): {
   card: TrustCardDraft | null
