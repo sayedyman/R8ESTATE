@@ -10,9 +10,17 @@ import { useEffect, useState } from "react"
 export function useDataHydration() {
   const { data: session, status } = useSession()
   const [isLoading, setIsLoading] = useState(false)
+  const [isHydrated, setIsHydrated] = useState(false)
 
   useEffect(() => {
     async function loadData() {
+      if (status === "loading") return
+      
+      if (status === "unauthenticated") {
+        setIsHydrated(true)
+        return
+      }
+
       if (status === "authenticated" && session?.user?.id && !isLoading) {
         setIsLoading(true)
         try {
@@ -31,11 +39,12 @@ export function useDataHydration() {
           console.error("Error hydrating user data from Supabase:", error)
         } finally {
           setIsLoading(false)
+          setIsHydrated(true)
         }
       }
     }
     loadData()
   }, [status, session])
 
-  return { isLoading }
+  return { isLoading, isHydrated }
 }

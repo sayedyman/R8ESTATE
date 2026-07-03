@@ -41,7 +41,7 @@ function DashboardContent() {
   const t = useTranslations("dashboard")
 
   // Load user data from Supabase on mount
-  useDataHydration()
+  const { isHydrated } = useDataHydration()
 
   // Fetch real Supabase aggregated metrics & insights
   const { analyticsConfig, isLoading: isAnalyticsLoading, hasNoAnalytics: hasNoRealAnalytics, userId } = useDashboardAnalytics()
@@ -51,14 +51,16 @@ function DashboardContent() {
   const [activeTab, setActiveTab] = React.useState("Overview")
 
   React.useEffect(() => {
+    if (!isHydrated) return
+
     if (useOnboardingStore.getState().userMode === "preview") {
       router.replace(ROUTES.PROFILE + "?preview=true")
       return
     }
     setMounted(true)
-  }, [router])
+  }, [router, isHydrated])
 
-  if (!mounted || (isAnalyticsLoading && !isDemo)) {
+  if (!isHydrated || !mounted || (isAnalyticsLoading && !isDemo)) {
     return (
       <div className="flex items-center justify-center h-screen bg-slate-50 w-full">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>

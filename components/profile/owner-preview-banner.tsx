@@ -4,9 +4,9 @@ import * as React from "react"
 import { useRouter } from "next/navigation"
 import { ROUTES } from "@/constants/routes"
 import { Button } from "@/components/ui/button"
-import { Edit, Share2, Link as LinkIcon, Info, X, CheckCircle2, Copy } from "lucide-react"
-import { Linkedin, Facebook, Twitter } from "@/components/ui/social-icons"
+import { Edit, Share2, Link as LinkIcon, Info, X, CheckCircle2 } from "lucide-react"
 import { useOnboardingStore } from "@/stores/onboarding-store"
+import { ShareModal } from "./share-modal"
 import { motion, AnimatePresence } from "framer-motion"
 import { generateSlug } from "@/hooks/use-public-trust-card"
 import { useSession } from "next-auth/react"
@@ -77,7 +77,21 @@ export function OwnerPreviewBanner() {
     return `${window.location.origin}/u/${slug}`;
   }
 
-  const handleShare = () => {
+  const handleShare = async () => {
+    const url = getUrl()
+    const name = (userMode === "registered" && savedTrustCard ? savedTrustCard : trustCardDraft)?.fullName || "Agent"
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `${name}'s Trust Card`,
+          text: "Check out my verified professional Trust Card profile!",
+          url,
+        })
+        return
+      } catch (err) {
+        console.warn("Native share failed, opening modal:", err)
+      }
+    }
     setIsShareOpen(true)
   }
 
@@ -173,109 +187,11 @@ export function OwnerPreviewBanner() {
         </div>
       )}
 
-      {/* Share Modal */}
-      <AnimatePresence>
-        {isShareOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6" onClick={() => setIsShareOpen(false)}>
-            {/* Backdrop */}
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
-            />
-            
-            {/* Modal Content */}
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95, y: 10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 10 }}
-              transition={{ type: "spring", duration: 0.5 }}
-              className="relative bg-white rounded-[32px] shadow-2xl w-full max-w-[420px] pt-12 pb-8 px-8 text-center"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Close Button */}
-              <button 
-                onClick={() => setIsShareOpen(false)} 
-                className="absolute top-5 right-5 text-slate-400 hover:text-slate-700 transition-colors bg-slate-50 hover:bg-slate-100 p-2 rounded-full"
-              >
-                <X className="h-4 w-4" />
-              </button>
-
-              {/* Header */}
-              <h3 className="text-xl font-bold text-slate-900 pr-8">{t("share.title")}</h3>
-              <p className="text-sm text-slate-500 mt-1">{t("share.subtitle")}</p>
-
-              {/* Link Input Section */}
-              <div className="relative flex items-center w-full mt-8 mb-8 group">
-                <input 
-                  type="text" 
-                  readOnly 
-                  value={getUrl()} 
-                  className="w-full bg-slate-50 border border-slate-200 text-slate-600 text-[15px] font-medium rounded-2xl py-4 pl-5 pr-14 outline-none transition-colors group-hover:border-slate-300"
-                />
-                <button 
-                  onClick={handleCopyLink}
-                  className="absolute right-2 p-2.5 bg-white border border-slate-200 text-slate-600 hover:text-primary hover:border-primary rounded-xl shadow-sm transition-all active:scale-95"
-                  title="Copy link"
-                >
-                  <Copy className="h-4 w-4" />
-                </button>
-              </div>
-
-              {/* Divider */}
-              <div className="flex items-center gap-3 mb-8 rtl:flip">
-                <div className="h-px bg-slate-100 flex-1" />
-                <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">
-                  {t("share.shareVia")}
-                </span>
-                <div className="h-px bg-slate-100 flex-1" />
-              </div>
-
-              {/* Social Buttons */}
-              <div className="flex items-center justify-center gap-5 mb-8">
-                <motion.button 
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  onClick={() => shareLinks.facebook()}
-                  className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-blue-500 hover:bg-[#1877F2] hover:text-white hover:shadow-lg hover:shadow-blue-500/30 transition-colors"
-                >
-                  <Facebook className="h-5 w-5" />
-                </motion.button>
-                <motion.button 
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  onClick={() => shareLinks.twitter()}
-                  className="w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center text-slate-700 hover:bg-black hover:text-white hover:shadow-lg hover:shadow-black/20 transition-colors"
-                >
-                  <Twitter className="h-5 w-5" />
-                </motion.button>
-                <motion.button 
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  onClick={() => shareLinks.whatsapp()}
-                  className="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center text-green-600 hover:bg-green-500 hover:text-white hover:shadow-lg hover:shadow-green-500/30 transition-colors"
-                >
-                  <span className="font-bold text-xl leading-none block pt-0.5">W</span>
-                </motion.button>
-                <motion.button 
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  onClick={() => shareLinks.linkedin()}
-                  className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 hover:bg-[#0A66C2] hover:text-white hover:shadow-lg hover:shadow-blue-600/30 transition-colors"
-                >
-                  <Linkedin className="h-5 w-5" />
-                </motion.button>
-              </div>
-
-              {/* Footer text */}
-              <p className="text-[13px] text-slate-400 font-medium">
-                Anyone with this link can view your professional Trust Card.
-              </p>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+      <ShareModal 
+        isOpen={isShareOpen} 
+        onClose={() => setIsShareOpen(false)} 
+        url={getUrl()} 
+      />
     </>
   )
 }

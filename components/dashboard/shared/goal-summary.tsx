@@ -9,6 +9,7 @@ import { ROUTES } from "@/constants/routes"
 import { useOnboardingStore } from "@/stores/onboarding-store"
 import { AnalyticsService } from "@/lib/services/analytics.service"
 import { useTranslations } from "next-intl"
+import { ShareModal } from "../../profile/share-modal"
 
 interface GoalSummaryProps {
   firstName: string
@@ -38,6 +39,7 @@ export function GoalSummary({
   const router = useRouter()
   const { trustCardDraft } = useOnboardingStore()
   const t = useTranslations("dashboard")
+  const [isShareOpen, setIsShareOpen] = React.useState(false)
 
   const contactRate = hasNoAnalytics
     ? 0
@@ -84,16 +86,15 @@ export function GoalSummary({
       try {
         await navigator.share({
           title: `${trustCardDraft?.fullName || "Agent"}'s Trust Card`,
-          text: `Check out my verified professional Trust Card profile!`,
+          text: "Check out my verified professional Trust Card profile!",
           url,
         })
+        return
       } catch (err) {
-        console.warn("Share aborted or failed:", err)
+        console.warn("Native share failed, opening modal:", err)
       }
-    } else {
-      navigator.clipboard.writeText(url)
-      alert("Web share not supported. Public profile link copied to clipboard!")
     }
+    setIsShareOpen(true)
   }
 
   const items = [
@@ -224,6 +225,12 @@ export function GoalSummary({
           </div>
         </div>
       </div>
+      <ShareModal 
+        isOpen={isShareOpen} 
+        onClose={() => setIsShareOpen(false)} 
+        url={getProfileUrl()} 
+        onShare={trackShare}
+      />
     </div>
   )
 }

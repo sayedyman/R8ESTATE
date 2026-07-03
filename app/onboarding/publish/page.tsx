@@ -18,19 +18,6 @@ export default function PublishPage() {
     router.push(`${ROUTES.SIGNUP}?callbackUrl=${encodeURIComponent(ROUTES.DASHBOARD)}`)
   }
 
-  const handleContinuePublishing = () => {
-    // Publish without an account
-    setPublishState("publishing")
-    completeOnboarding()
-    
-    setTimeout(() => {
-      setPublishState("success")
-      setTimeout(() => {
-        router.push(`${ROUTES.PROFILE}?preview=true`)
-      }, 1000)
-    }, 1500)
-  }
-
   if (!trustCardDraft.fullName) {
     // If accessed directly without data
     if (typeof window !== "undefined") {
@@ -51,31 +38,33 @@ export default function PublishPage() {
           <TrustCardPreview />
         </div>
         
-        <div className="w-full max-w-md mt-6 bg-white p-4 rounded-xl border border-slate-100 flex items-center gap-4 justify-between shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="bg-slate-100 p-2 rounded-lg">
-              <QrCode className="h-6 w-6 text-slate-700" />
+        <div className="w-full max-w-md mt-6 bg-white p-4 rounded-xl border border-slate-100 flex flex-col gap-3 shadow-sm">
+          <div className="flex items-center gap-4 justify-between">
+            <div className="flex items-center gap-3 opacity-50">
+              <div className="bg-slate-100 p-2 rounded-lg">
+                <QrCode className="h-6 w-6 text-slate-400" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-slate-400">Share via QR</p>
+                <p className="text-xs text-slate-400">Scan to view profile</p>
+              </div>
             </div>
-            <div>
-              <p className="text-sm font-semibold">Share via QR</p>
-              <p className="text-xs text-slate-500">Scan to view profile</p>
+            <div className="flex gap-2">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                title="Copy Link"
+                disabled
+                className="opacity-50 pointer-events-none text-slate-300"
+              >
+                <Copy className="h-4 w-4" />
+              </Button>
+              <Button variant="ghost" size="icon" title="Download" disabled className="opacity-50 pointer-events-none text-slate-300"><Download className="h-4 w-4" /></Button>
+              <Button variant="ghost" size="icon" title="Share" disabled className="opacity-50 pointer-events-none text-slate-300"><Share2 className="h-4 w-4" /></Button>
             </div>
           </div>
-          <div className="flex gap-2">
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              title="Copy Link"
-              onClick={() => {
-                const slug = trustCardDraft.fullName ? trustCardDraft.fullName.toLowerCase().trim().replace(/[^\w\s-]/g, "").replace(/[\s_-]+/g, "-").replace(/^-+|-+$/g, "") : "preview"
-                navigator.clipboard.writeText(`${window.location.origin}/u/${slug}`)
-                alert("Link copied!")
-              }}
-            >
-              <Copy className="h-4 w-4" />
-            </Button>
-            <Button variant="ghost" size="icon" title="Download"><Download className="h-4 w-4" /></Button>
-            <Button variant="ghost" size="icon" title="Share"><Share2 className="h-4 w-4" /></Button>
+          <div className="text-xs text-slate-500 bg-slate-50 p-2.5 rounded-lg border border-slate-100 text-center font-medium">
+            Create your free account to publish and share your Trust Card.
           </div>
         </div>
       </div>
@@ -137,24 +126,6 @@ export default function PublishPage() {
                 onClick={handleCompleteProfile}
               >
                 Complete My Profile
-              </Button>
-              
-              <Button 
-                variant={publishState === "success" ? "default" : "ghost"} 
-                size="lg" 
-                className={`w-full h-12 hover:text-white hover:bg-white/10 transition-all ${
-                  publishState === "success" 
-                    ? "bg-success/20 text-success hover:bg-success/30 hover:text-success border border-success/30" 
-                    : publishState === "publishing"
-                    ? "text-blue-300"
-                    : "text-slate-400"
-                }`}
-                onClick={handleContinuePublishing}
-                disabled={publishState !== "idle"}
-              >
-                {publishState === "idle" && "Continue without signing up"}
-                {publishState === "publishing" && "Continuing..."}
-                {publishState === "success" && "✓ Done."}
               </Button>
             </div>
           </div>
