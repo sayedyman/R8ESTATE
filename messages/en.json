@@ -397,6 +397,7 @@
     "ownerBanner": {
       "title": "This is how clients will see your Trust Card",
       "subtitle": "Your Trust Card has been published successfully. You can share it now or update it anytime.",
+      "guestSubtitle": "Create your free account to publish and share your Trust Card.",
       "editMode": "Edit Mode",
       "editModeSubtitle": "Make changes below and click Save Changes when you're done.",
       "editTrustCard": "Edit Trust Card",

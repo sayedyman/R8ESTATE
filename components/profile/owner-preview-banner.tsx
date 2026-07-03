@@ -117,7 +117,9 @@ export function OwnerPreviewBanner() {
           </div>
           <div>
             <p className="font-semibold text-[15px]">{t("ownerBanner.title")}</p>
-            <p className="text-xs text-slate-400 mt-0.5">{t("ownerBanner.subtitle")}</p>
+            <p className="text-xs text-slate-400 mt-0.5">
+              {userMode === "preview" ? t("ownerBanner.guestSubtitle") : t("ownerBanner.subtitle")}
+            </p>
           </div>
         </div>
         
@@ -127,8 +129,9 @@ export function OwnerPreviewBanner() {
               <Button 
                 size="sm"
                 variant="ghost" 
-                className="h-9 text-slate-300 hover:text-white hover:bg-white/10 hidden sm:flex gap-2"
+                className="h-9 text-slate-300 hover:text-white hover:bg-white/10 hidden sm:flex gap-2 disabled:opacity-50 disabled:pointer-events-none"
                 onClick={handleCopyLink}
+                disabled={userMode === "preview"}
               >
                 <LinkIcon className="h-4 w-4" />
                 {t("ownerBanner.copyLink")}
@@ -146,8 +149,9 @@ export function OwnerPreviewBanner() {
               
               <Button 
                 size="sm" 
-                className="h-9 bg-emerald-500 hover:bg-emerald-600 text-white border-0"
+                className="h-9 bg-emerald-500 hover:bg-emerald-600 text-white border-0 disabled:opacity-50 disabled:pointer-events-none"
                 onClick={handleShare}
+                disabled={userMode === "preview"}
               >
                 <Share2 className="h-4 w-4 mr-1.5 rtl:ml-1.5 rtl:mr-0" />
                 {t("ownerBanner.shareLink")}

@@ -12,7 +12,7 @@ import { ROUTES } from "@/constants/routes"
  */
 export function useAuthSync() {
   const { data: session, status, update } = useSession()
-  const { trustCardDraft, savePreviewToPermanent } = useOnboardingStore()
+  const { trustCardDraft, selectedGoal, savePreviewToPermanent } = useOnboardingStore()
   const [isSyncing, setIsSyncing] = useState(false)
   const router = useRouter()
 
@@ -29,8 +29,8 @@ export function useAuthSync() {
         try {
           console.log("Authenticating user session detected. Syncing draft card data to Supabase...")
           
-          // Save the draft Trust Card and update user table
-          await saveOnboardingResultAction(trustCardDraft)
+          // Save the draft Trust Card (with selectedGoal) and update user table
+          await saveOnboardingResultAction(trustCardDraft, selectedGoal)
           
           // Save Zustand draft locally and flag registered state
           savePreviewToPermanent()
@@ -48,7 +48,7 @@ export function useAuthSync() {
       }
     }
     sync()
-  }, [status, session, trustCardDraft, isSyncing, savePreviewToPermanent, update, router])
+  }, [status, session, trustCardDraft, selectedGoal, isSyncing, savePreviewToPermanent, update, router])
 
   return { isSyncing }
 }

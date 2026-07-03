@@ -18,6 +18,18 @@ export default function PublishPage() {
     router.push(`${ROUTES.SIGNUP}?callbackUrl=${encodeURIComponent(ROUTES.DASHBOARD)}`)
   }
 
+  const handleContinuePublishing = () => {
+    setPublishState("publishing")
+    completeOnboarding()
+    
+    setTimeout(() => {
+      setPublishState("success")
+      setTimeout(() => {
+        router.push(`${ROUTES.PROFILE}?preview=true`)
+      }, 1000)
+    }, 1500)
+  }
+
   if (!trustCardDraft.fullName) {
     // If accessed directly without data
     if (typeof window !== "undefined") {
@@ -119,13 +131,31 @@ export default function PublishPage() {
               </div>
             </div>
             
-            <div className="space-y-3">
+            <div className="space-y-3 w-full">
               <Button 
                 size="lg" 
                 className="w-full h-14 text-base font-bold bg-white text-slate-900 hover:bg-slate-100" 
                 onClick={handleCompleteProfile}
               >
                 Complete My Profile
+              </Button>
+
+              <Button 
+                variant={publishState === "success" ? "default" : "ghost"} 
+                size="lg" 
+                className={`w-full h-12 hover:text-white hover:bg-white/10 transition-all ${
+                  publishState === "success" 
+                    ? "bg-success/20 text-success hover:bg-success/30 hover:text-success border border-success/30" 
+                    : publishState === "publishing"
+                    ? "text-blue-300 animate-pulse"
+                    : "text-slate-400"
+                }`}
+                onClick={handleContinuePublishing}
+                disabled={publishState !== "idle"}
+              >
+                {publishState === "idle" && "Continue without signing up"}
+                {publishState === "publishing" && "Continuing..."}
+                {publishState === "success" && "✓ Done."}
               </Button>
             </div>
           </div>

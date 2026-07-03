@@ -219,18 +219,19 @@ export class TrustCardService {
   }
 
   /**
-   * Creates a trust card for a user from frontend draft data.
+   * Creates (or upserts) a trust card for a user from frontend draft data.
+   * Uses upsert on user_id to safely handle cases where the sync hook fires more than once.
    */
   async createTrustCard(userId: string, draft: TrustCardDraft, selectedGoal?: string | null): Promise<TrustCardRow> {
     const payload = mapDraftToInsert(userId, draft, selectedGoal)
     const { data, error } = await this.supabase
       .from('trust_cards')
-      .insert(payload)
+      .upsert(payload, { onConflict: 'user_id' })
       .select()
       .single()
 
     if (error) {
-      console.error(`Error creating trust card for user ${userId}:`, error.message)
+      console.error(`Error upserting trust card for user ${userId}:`, error.message)
       throw error
     }
 
