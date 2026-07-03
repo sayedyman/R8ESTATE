@@ -31,8 +31,8 @@ export async function proxy(request: NextRequest) {
     }
 
     if (!isOnboardingCompleted) {
-      // User is logged in but hasn't completed onboarding. Redirect to welcome page.
-      return NextResponse.redirect(new URL("/onboarding/welcome", request.nextUrl.origin))
+      // User is logged in but hasn't completed onboarding. Redirect to goal selection page.
+      return NextResponse.redirect(new URL("/onboarding/goal", request.nextUrl.origin))
     }
   }
 
@@ -46,7 +46,7 @@ export async function proxy(request: NextRequest) {
     if (isOnboardingCompleted) {
       return NextResponse.redirect(new URL("/dashboard", request.nextUrl.origin))
     } else {
-      return NextResponse.redirect(new URL("/onboarding/welcome", request.nextUrl.origin))
+      return NextResponse.redirect(new URL("/onboarding/goal", request.nextUrl.origin))
     }
   }
 

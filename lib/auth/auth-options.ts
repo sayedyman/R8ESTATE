@@ -91,12 +91,18 @@ export const authOptions: AuthOptions = {
       return true
     },
 
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
       // The user object is only passed on the initial sign in
       if (user) {
         token.id = (user as any).id
         token.isOnboardingCompleted = (user as any).isOnboardingCompleted
       }
+      
+      // Update session if trigger is called from client
+      if (trigger === "update" && session?.isOnboardingCompleted !== undefined) {
+        token.isOnboardingCompleted = session.isOnboardingCompleted
+      }
+      
       return token
     },
 

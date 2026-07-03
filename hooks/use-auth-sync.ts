@@ -36,7 +36,7 @@ export function useAuthSync() {
           savePreviewToPermanent()
           
           // Reload the NextAuth session so session.user.isOnboardingCompleted is updated to true
-          await update()
+          await update({ isOnboardingCompleted: true })
           
           console.log("Sync complete. Redirecting to Dashboard.")
           router.replace(ROUTES.DASHBOARD)
