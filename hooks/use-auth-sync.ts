@@ -1,6 +1,6 @@
 import { useSession } from "next-auth/react"
 import { useOnboardingStore } from "@/stores/onboarding-store"
-import { saveOnboardingResult } from "@/lib/services/onboarding.service"
+import { saveOnboardingResultAction } from "@/lib/actions/onboarding.actions"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { ROUTES } from "@/constants/routes"
@@ -30,7 +30,7 @@ export function useAuthSync() {
           console.log("Authenticating user session detected. Syncing draft card data to Supabase...")
           
           // Save the draft Trust Card and update user table
-          await saveOnboardingResult(session.user.id, trustCardDraft)
+          await saveOnboardingResultAction(trustCardDraft)
           
           // Save Zustand draft locally and flag registered state
           savePreviewToPermanent()

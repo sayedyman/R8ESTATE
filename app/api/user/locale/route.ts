@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth/auth-options'
 import { UserService } from '@/lib/services/user.service'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { isValidLocale } from '@/i18n/config'
 
 /**
@@ -24,7 +25,8 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid locale.' }, { status: 400 })
     }
 
-    const userService = new UserService()
+    const adminClient = createAdminClient()
+    const userService = new UserService(adminClient)
     await userService.updateUser(session.user.id, {
       preferred_locale: locale,
     } as any)

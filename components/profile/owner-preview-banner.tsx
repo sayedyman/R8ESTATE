@@ -11,7 +11,8 @@ import { motion, AnimatePresence } from "framer-motion"
 import { generateSlug } from "@/hooks/use-public-trust-card"
 import { useSession } from "next-auth/react"
 import { TrustCardService } from "@/lib/services/trust-card.service"
-import { UserService } from "@/lib/services/user.service"
+import { updateTrustCardAction } from "@/lib/actions/trust-card.actions"
+import { updateUserAction } from "@/lib/actions/user.actions"
 import { useTranslations } from "next-intl"
 
 export function OwnerPreviewBanner() {
@@ -38,14 +39,13 @@ export function OwnerPreviewBanner() {
           const existingCard = await trustCardService.getTrustCardByUserId(session.user.id)
           if (existingCard) {
             // Update existing Trust Card record
-            await trustCardService.updateTrustCard(existingCard.id, {
+            await updateTrustCardAction(existingCard.id, {
               ...tempDraft,
               selected_goal: useOnboardingStore.getState().selectedGoal
             } as any)
 
             // Also update base user fields
-            const userService = new UserService()
-            await userService.updateUser(session.user.id, {
+            await updateUserAction(session.user.id, {
               full_name: tempDraft.fullName,
               avatar_url: tempDraft.profilePhoto
             })

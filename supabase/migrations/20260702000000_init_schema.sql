@@ -9,11 +9,13 @@ $$ language plpgsql;
 
 -- Create Users table
 create table public.users (
-    id uuid primary key references auth.users(id) on delete cascade,
+    id uuid primary key,
     full_name text,
     email text unique not null,
     avatar_url text,
     auth_provider text,
+    google_user_id text,
+    is_onboarding_completed boolean default false not null,
     created_at timestamp with time zone default timezone('utc'::text, now()) not null,
     updated_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
@@ -26,13 +28,13 @@ create policy "Allow public read access to users"
     on public.users for select
     using (true);
 
-create policy "Allow insert for self"
+create policy "Block all client inserts (use API)"
     on public.users for insert
-    with check (auth.uid() = id);
+    with check (false);
 
-create policy "Allow update for self"
+create policy "Block all client updates (use API)"
     on public.users for update
-    using (auth.uid() = id);
+    using (false);
 
 -- Create trigger for users updated_at
 create trigger set_users_updated_at
@@ -72,39 +74,20 @@ create policy "Allow public read access to trust cards"
     on public.trust_cards for select
     using (true);
 
-create policy "Allow insert for own trust card"
+create policy "Block all client inserts for trust card (use API)"
     on public.trust_cards for insert
-    with check (auth.uid() = user_id);
+    with check (false);
 
-create policy "Allow update for own trust card"
+create policy "Block all client updates for trust card (use API)"
     on public.trust_cards for update
-    using (auth.uid() = user_id);
+    using (false);
 
-create policy "Allow delete for own trust card"
+create policy "Block all client deletes for trust card (use API)"
     on public.trust_cards for delete
-    using (auth.uid() = user_id);
+    using (false);
 
 -- Create trigger for trust_cards updated_at
 create trigger set_trust_cards_updated_at
     before update on public.trust_cards
     for each row execute procedure public.handle_updated_at();
 
--- Automatically sync users from auth.users to public.users on signup
-create or replace function public.handle_new_user()
-returns trigger as $$
-begin
-    insert into public.users (id, full_name, email, avatar_url, auth_provider)
-    values (
-        new.id,
-        coalesce(new.raw_user_meta_data->>'full_name', new.raw_user_meta_data->>'name'),
-        new.email,
-        new.raw_user_meta_data->>'avatar_url',
-        new.app_metadata->>'provider'
-    );
-    return new;
-end;
-$$ language plpgsql security definer;
-
-create trigger on_auth_user_created
-    after insert on auth.users
-    for each row execute procedure public.handle_new_user();
