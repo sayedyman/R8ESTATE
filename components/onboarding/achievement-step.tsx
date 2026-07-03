@@ -5,11 +5,15 @@ import { useOnboardingStore } from "@/stores/onboarding-store"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { Button } from "@/components/ui/button"
 import { WizardNavigation } from "@/components/onboarding/wizard-navigation"
 import { useTranslations } from "next-intl"
+import { useRouter } from "next/navigation"
+import { ROUTES } from "@/constants/routes"
 
 export function AchievementStep() {
-  const { trustCardDraft, updateDraft, nextStep, previousStep } = useOnboardingStore()
+  const router = useRouter()
+  const { trustCardDraft, updateDraft, previousStep } = useOnboardingStore()
   const t = useTranslations("onboarding.wizard")
 
   const achievement = trustCardDraft.achievement || {
@@ -28,11 +32,25 @@ export function AchievementStep() {
 
   const handleNext = (e: React.FormEvent) => {
     e.preventDefault()
-    nextStep()
+    router.push(ROUTES.PUBLISH_TRUST_CARD)
+  }
+
+  const handleSkip = () => {
+    updateDraft({ achievement: null })
+    router.push(ROUTES.PUBLISH_TRUST_CARD)
   }
 
   return (
     <form onSubmit={handleNext} className="space-y-6">
+      <div className="flex justify-end -mt-2 mb-2">
+        <button
+          type="button"
+          onClick={handleSkip}
+          className="text-sm text-blue-500 hover:text-blue-600 font-medium flex items-center transition-colors px-3 py-1.5 rounded-full hover:bg-blue-50/50 bg-transparent"
+        >
+          Skip for now
+        </button>
+      </div>
       <div className="grid grid-cols-1 gap-5">
         <div className="space-y-2">
           <Label htmlFor="achTitle">{t("achievementTitle")}</Label>
@@ -60,7 +78,6 @@ export function AchievementStep() {
 
       <WizardNavigation 
         onPrevious={previousStep}
-        nextLabel="Review Trust Card"
       />
     </form>
   )

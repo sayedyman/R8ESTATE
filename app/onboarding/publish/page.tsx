@@ -40,8 +40,10 @@ export default function PublishPage() {
   }
 
   return (
-    <div className="w-full max-w-5xl mx-auto py-8 px-4 flex flex-col lg:flex-row gap-12 items-start justify-center min-h-[calc(100vh-80px)]">
-      
+    <div className="w-full flex flex-col items-center">
+
+
+      <div className="w-full max-w-5xl mx-auto py-8 px-4 flex flex-col lg:flex-row gap-12 items-start justify-center min-h-[calc(100vh-140px)]">
       {/* Left side: Preview & Actions */}
       <div className="w-full lg:w-1/2 flex flex-col items-center">
         <h2 className="text-2xl font-bold mb-6 text-center">Your Trust Card</h2>
@@ -85,7 +87,12 @@ export default function PublishPage() {
           <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-primary/20 blur-3xl pointer-events-none" />
           <div className="absolute bottom-0 left-0 -ml-16 -mb-16 w-48 h-48 rounded-full bg-blue-500/20 blur-3xl pointer-events-none" />
           
-          <div className="relative z-10">
+          <div className="relative z-10 flex flex-col items-start">
+            <div className="w-fit inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-100 border border-green-200 text-xs font-medium mb-3 text-green-900">
+              <CheckCircle2 className="h-3.5 w-3.5 text-green-700" />
+              Your Trust Card is now live
+            </div>
+            
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-xs font-semibold mb-6 text-blue-200">
               <ShieldCheck className="h-4 w-4" />
               Unlock Full Potential
@@ -145,15 +152,16 @@ export default function PublishPage() {
                 onClick={handleContinuePublishing}
                 disabled={publishState !== "idle"}
               >
-                {publishState === "idle" && "Continue Publishing without account"}
-                {publishState === "publishing" && "Publishing your Trust Card..."}
-                {publishState === "success" && "✓ Your Trust Card is now live."}
+                {publishState === "idle" && "Continue without signing up"}
+                {publishState === "publishing" && "Continuing..."}
+                {publishState === "success" && "✓ Done."}
               </Button>
             </div>
           </div>
         </div>
       </div>
       
+      </div>
     </div>
   )
 }

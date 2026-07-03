@@ -180,7 +180,7 @@ export function ProfileInformationStep() {
 
       <WizardNavigation 
         onPrevious={previousStep}
-        nextLabel="Review Trust Card"
+        nextLabel="Next"
       />
     </form>
   )

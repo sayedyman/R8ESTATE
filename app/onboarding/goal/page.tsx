@@ -46,7 +46,7 @@ function GoalSelectionContent() {
 
   const handleContinue = () => {
     if (selectedGoal) {
-      router.push(ROUTES.ONBOARDING_WELCOME)
+      router.push(ROUTES.ONBOARDING_WIZARD)
     }
   }
 

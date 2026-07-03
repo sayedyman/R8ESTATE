@@ -10,8 +10,6 @@ export const ROUTES = {
   FORGOT_PASSWORD: "/forgot-password",
   RESET_PASSWORD: "/reset-password",
   ONBOARDING_GOAL: "/onboarding/goal",
-  ONBOARDING_WELCOME: "/onboarding/welcome",
   ONBOARDING_WIZARD: "/onboarding/wizard",
-  ONBOARDING_SUCCESS: "/onboarding/success",
   PUBLISH_TRUST_CARD: "/onboarding/publish",
 } as const;

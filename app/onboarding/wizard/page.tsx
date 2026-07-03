@@ -7,7 +7,7 @@ import { useOnboardingStore } from "@/stores/onboarding-store"
 import { useSession } from "next-auth/react"
 import { ROUTES } from "@/constants/routes"
 import { TrustCardPreview } from "@/components/onboarding/trust-card-preview"
-import { WizardStep1, WizardStep2, WizardStep3, WizardStep4, WizardStep5, WizardStep6, WizardStep7 } from "@/components/onboarding/wizard-steps"
+import { WizardStep1, WizardStep2, WizardStep3, WizardStep4, WizardStep5, WizardStep6 } from "@/components/onboarding/wizard-steps"
 import { useTranslations } from "next-intl"
 
 export default function WizardPage() {
@@ -52,7 +52,6 @@ export default function WizardPage() {
     WizardStep4,
     WizardStep5,
     WizardStep6,
-    WizardStep7,
   }
 
   const CurrentStepComponent = steps[`WizardStep${currentStep}` as keyof typeof steps]
@@ -120,7 +119,6 @@ export default function WizardPage() {
               {currentStep === 4 && <WizardStep4 />}
               {currentStep === 5 && <WizardStep5 />}
               {currentStep === 6 && <WizardStep6 />}
-              {currentStep === 7 && <WizardStep7 />}
             </motion.div>
           </AnimatePresence>
         </div>
