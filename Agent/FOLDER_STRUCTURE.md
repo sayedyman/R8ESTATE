@@ -10,6 +10,7 @@ components/
   dashboard/
     goal-dashboard.tsx        # Top-level dashboard orchestrator
     shared/                   # All dashboard section components
+    trust-card-editor/        # Editor UI components and layout
   onboarding/       # Wizard steps and navigation
   profile/          # PublicProfileLayout, OwnerPreviewBanner, TrustCard sub-components
   ui/               # shadcn/ui reusable primitives

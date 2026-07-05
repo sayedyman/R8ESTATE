@@ -3,7 +3,7 @@
 import * as React from "react"
 import { Container } from "@/components/ui/container"
 import { motion } from "framer-motion"
-import { useTranslations } from "next-intl"
+import { useTranslations } from "@/hooks/use-translations"
 
 const metrics = [
   { id: 1, key: "1" },
@@ -36,3 +36,4 @@ export function SocialProof() {
     </section>
   )
 }
+

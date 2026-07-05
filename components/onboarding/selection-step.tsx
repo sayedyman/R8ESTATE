@@ -16,6 +16,7 @@ interface SelectionStepProps {
   searchPlaceholder?: string;
   customInputLabel?: string;
   customInputPlaceholder?: string;
+  isEditorMode?: boolean;
 }
 
 export function SelectionStep({
@@ -28,6 +29,7 @@ export function SelectionStep({
   searchPlaceholder = "Search or type...",
   customInputLabel = "Custom Option",
   customInputPlaceholder = "e.g. Other",
+  isEditorMode = false,
 }: SelectionStepProps) {
   const [searchTerm, setSearchTerm] = React.useState("")
   const [isOther, setIsOther] = React.useState(false)
@@ -127,10 +129,12 @@ export function SelectionStep({
         )}
       </div>
 
-      <WizardNavigation 
-        onPrevious={onPrevious}
-        nextDisabled={!value}
-      />
+      {isEditorMode ? null : (
+        <WizardNavigation 
+          onPrevious={onPrevious}
+          nextDisabled={!value}
+        />
+      )}
     </form>
   )
 }

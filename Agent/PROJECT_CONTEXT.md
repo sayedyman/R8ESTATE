@@ -114,4 +114,10 @@ Mobile
 - **Visual Audit Fixes**: Standardized border-radius (cards use `rounded-xl`, pills use `rounded-md`), card header bottom padding (`pb-4 border-b border-slate-100`), consistent card shadows (`shadow-sm border-slate-200`), card subtitle spacing (`mt-1`), and cleaned up icon sizing.
 - **Code Registry Pattern**: Decentralized goal configuration switches by establishing `data/goals/index.ts` as a registry, cleaning up page routing dependencies.
 - **Type-Safe Refactoring**: Tightened props and data shapes (such as `Recommendation.impact` strictly using `"High" | "Medium" | "Low"`). Removed unused components (`goal-progress.tsx`, `more-leads-dashboard.tsx`) and functions (`conversionLabel`).
+
+## Authentication & Editor Refactoring
+**Status**: Completed
+- **Development Mode Auth**: Restricted NextAuth Credentials Provider to run only in `development` mode for local testing safety.
+- **Trust Card Editor**: Re-architected Trust Card Editor into a dedicated `components/dashboard/trust-card-editor/` module, cleanly separating the view layer from editing logic.
+- **Onboarding Stability**: Stabilized the onboarding publish flow and resolved authentication routing issues.
 

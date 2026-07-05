@@ -4,32 +4,32 @@ import * as React from "react"
 import { useRouter } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
 import { useOnboardingStore } from "@/stores/onboarding-store"
-import { useSession } from "next-auth/react"
+import { useAuthStore } from "@/stores/auth-store"
 import { ROUTES } from "@/constants/routes"
 import { TrustCardPreview } from "@/components/onboarding/trust-card-preview"
 import { WizardStep1, WizardStep2, WizardStep3, WizardStep4, WizardStep5, WizardStep6 } from "@/components/onboarding/wizard-steps"
-import { useTranslations } from "next-intl"
+import { useTranslations } from "@/hooks/use-translations"
 
 export default function WizardPage() {
   const router = useRouter()
   const { currentStep, selectedGoal, isOnboardingCompleted, userMode, trustCardDraft, updateDraft } = useOnboardingStore()
-  const { data: session } = useSession()
+  const { user } = useAuthStore()
   const t = useTranslations("onboarding.wizard")
 
   React.useEffect(() => {
-    if (session?.user) {
+    if (user) {
       const updates: Partial<typeof trustCardDraft> = {}
-      if (!trustCardDraft.fullName && session.user.name) {
-        updates.fullName = session.user.name
+      if (!trustCardDraft.fullName && user.name) {
+        updates.fullName = user.name
       }
-      if (!trustCardDraft.profilePhoto && session.user.image) {
-        updates.profilePhoto = session.user.image
+      if (!trustCardDraft.profilePhoto && user.profilePhoto) {
+        updates.profilePhoto = user.profilePhoto
       }
       if (Object.keys(updates).length > 0) {
         updateDraft(updates)
       }
     }
-  }, [session, trustCardDraft, updateDraft])
+  }, [user, trustCardDraft, updateDraft])
 
   React.useEffect(() => {
     if (isOnboardingCompleted) {

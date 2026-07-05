@@ -4,7 +4,7 @@ import * as React from "react"
 import { Container } from "@/components/ui/container"
 import { SectionTitle } from "@/components/ui/section-title"
 import { motion } from "framer-motion"
-import { useTranslations } from "next-intl"
+import { useTranslations } from "@/hooks/use-translations"
 
 const steps = [
   { num: "1", key: "1" },
@@ -57,3 +57,4 @@ export function HowItWorks() {
     </section>
   )
 }
+

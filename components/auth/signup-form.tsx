@@ -6,16 +6,16 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { signupSchema, type SignupFormData } from "@/schemas/auth.schema"
-import { signup } from "@/lib/auth/auth"
 import { ROUTES } from "@/constants/routes"
 import { useOnboardingStore } from "@/stores/onboarding-store"
+import { useAuthStore } from "@/stores/auth-store"
 
 import { AuthCard, AuthHeader } from "./auth-card"
 import { PasswordInput } from "./password-input"
 import { GoogleButton } from "./google-button"
 import { LoadingButton } from "./loading-button"
 import { PasswordStrengthIndicator } from "./password-strength-indicator"
-import { useTranslations } from "next-intl"
+import { useTranslations } from "@/hooks/use-translations"
 
 import {
   Form,
@@ -37,6 +37,7 @@ export function SignupForm() {
   const { savePreviewToPermanent } = useOnboardingStore()
   const [error, setError] = React.useState<string | null>(null)
   const [isSuccess, setIsSuccess] = React.useState(false)
+  const login = useAuthStore(state => state.login)
   const t = useTranslations("auth")
 
   const form = useForm<SignupFormData>({
@@ -53,19 +54,21 @@ export function SignupForm() {
 
   async function onSubmit(data: SignupFormData) {
     setError(null)
-    const result = await signup(data)
 
-    if (result.error) {
-      setError(result.error)
-      return
-    }
-
-    if (result.user) {
+    try {
+      // Mock signup authentication
       setIsSuccess(true)
+      login({
+        id: "mock-user-id",
+        name: data.fullName,
+        email: data.email
+      })
       savePreviewToPermanent()
-      setTimeout(() => {
-        router.push(callbackUrl || ROUTES.DASHBOARD)
-      }, 500)
+      
+      router.push(callbackUrl || ROUTES.DASHBOARD)
+      router.refresh()
+    } catch (err) {
+      setError("An unexpected error occurred.")
     }
   }
 

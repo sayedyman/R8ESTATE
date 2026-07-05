@@ -4,8 +4,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Container } from "@/components/ui/container"
-import { useTranslations } from "next-intl"
-import { LanguageSwitcher } from "@/components/ui/language-switcher"
+import { useTranslations } from "@/hooks/use-translations"
 
 import { ROUTES } from "@/constants/routes"
 export function Navbar() {
@@ -86,7 +85,6 @@ export function Navbar() {
           <Link href="#faq" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm">{t("faq")}</Link>
         </nav>
         <div className="flex items-center gap-3">
-          <LanguageSwitcher />
           <Link href={ROUTES.LOGIN} className="text-sm font-medium text-muted-foreground hover:text-foreground hidden md:block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm px-2 py-1">{t("signIn")}</Link>
           <Link href={`${ROUTES.ONBOARDING_GOAL}?new=true`} className={buttonVariants({ variant: "default" })}>
             {t("createTrustCard")}
@@ -96,3 +94,4 @@ export function Navbar() {
     </header>
   )
 }
+

@@ -3,18 +3,28 @@
 import * as React from "react"
 import { Button, ButtonProps } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { signIn } from "next-auth/react"
+import { useAuthStore } from "@/stores/auth-store"
+import { useOnboardingStore } from "@/stores/onboarding-store"
+import { useRouter } from "next/navigation"
 
 export const GoogleButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, children = "Continue with Google", onClick, ...props }, ref) => {
+    const router = useRouter()
+    
     const handleGoogleSignIn = async (e: any) => {
       if (onClick) {
         onClick(e)
       }
       if (e.defaultPrevented) return
 
-      // Trigger Google sign in with redirection to dashboard (which proxy intercepts and redirects appropriately)
-      await signIn("google", { callbackUrl: "/dashboard" })
+      // Mock Google Login
+      useAuthStore.getState().login({
+        id: "mock-google-user",
+        name: "Google User",
+        email: "google@example.com"
+      })
+      useOnboardingStore.getState().savePreviewToPermanent()
+      router.push("/dashboard")
     }
 
     return (

@@ -12,7 +12,7 @@ import { CheckCircle2, Shield, Star, Award } from "lucide-react"
 import { ROUTES } from "@/constants/routes"
 import Link from "next/link"
 import { RotatingText } from "@/components/ui/rotating-text"
-import { useTranslations } from "next-intl"
+import { useTranslations } from "@/hooks/use-translations"
 
 export function Hero() {
   const t = useTranslations("hero")
@@ -173,3 +173,4 @@ export function Hero() {
     </section>
   )
 }
+

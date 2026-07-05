@@ -6,15 +6,15 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { loginSchema, type LoginFormData } from "@/schemas/auth.schema"
-import { login } from "@/lib/auth/auth"
 import { ROUTES } from "@/constants/routes"
 import { useOnboardingStore } from "@/stores/onboarding-store"
+import { useAuthStore } from "@/stores/auth-store"
 
 import { AuthCard, AuthHeader } from "./auth-card"
 import { PasswordInput } from "./password-input"
 import { GoogleButton } from "./google-button"
 import { LoadingButton } from "./loading-button"
-import { useTranslations } from "next-intl"
+import { useTranslations } from "@/hooks/use-translations"
 
 import {
   Form,
@@ -36,6 +36,7 @@ export function LoginForm() {
   const { savePreviewToPermanent } = useOnboardingStore()
   const [error, setError] = React.useState<string | null>(null)
   const [isSuccess, setIsSuccess] = React.useState(false)
+  const login = useAuthStore(state => state.login)
   const t = useTranslations("auth")
 
   const form = useForm<LoginFormData>({
@@ -49,20 +50,21 @@ export function LoginForm() {
 
   async function onSubmit(data: LoginFormData) {
     setError(null)
-    const result = await login(data)
 
-    if (result.error) {
-      setError(result.error)
-      return
-    }
-
-    if (result.user) {
+    try {
+      // Mock Authentication
       setIsSuccess(true)
+      login({
+        id: "mock-user-id",
+        name: data.email.split('@')[0],
+        email: data.email
+      })
       savePreviewToPermanent()
-      // Small artificial delay before redirecting to show success state
-      setTimeout(() => {
-        router.push(callbackUrl || ROUTES.DASHBOARD)
-      }, 500)
+      
+      router.push(callbackUrl || ROUTES.DASHBOARD)
+      router.refresh()
+    } catch (err) {
+      setError("An unexpected error occurred.")
     }
   }
 

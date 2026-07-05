@@ -6,10 +6,11 @@ import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Upload, X } from "lucide-react"
 import { WizardNavigation } from "@/components/onboarding/wizard-navigation"
-import { useTranslations } from "next-intl"
+import { useTranslations } from "@/hooks/use-translations"
 
-export function ProfilePhotoStep() {
-  const { trustCardDraft, updateDraft, nextStep, previousStep } = useOnboardingStore()
+export function ProfilePhotoStep({ isEditorMode }: { isEditorMode?: boolean } = {}) {
+  const { trustCardDraft, savedTrustCard, userMode, updateDraft, nextStep, previousStep } = useOnboardingStore()
+  const draft = userMode === "registered" && savedTrustCard ? savedTrustCard : trustCardDraft;
   const fileInputRef = React.useRef<HTMLInputElement>(null)
   const t = useTranslations("onboarding.wizard")
 
@@ -36,7 +37,7 @@ export function ProfilePhotoStep() {
         
         <div className="relative group">
           <Avatar className="h-40 w-40 border-4 border-slate-100 shadow-lg">
-            <AvatarImage src={trustCardDraft.profilePhoto} className="object-cover" />
+            <AvatarImage src={draft.profilePhoto} className="object-cover" />
             <AvatarFallback className="bg-slate-50">
               <Upload className="h-10 w-10 text-slate-300" />
             </AvatarFallback>
@@ -49,11 +50,11 @@ export function ProfilePhotoStep() {
               className="text-white hover:text-white hover:bg-white/20"
               onClick={() => fileInputRef.current?.click()}
             >
-              {trustCardDraft.profilePhoto ? t("replacePhoto") : t("uploadPhoto")}
+              {draft.profilePhoto ? t("replacePhoto") : t("uploadPhoto")}
             </Button>
           </div>
           
-          {trustCardDraft.profilePhoto && (
+          {draft.profilePhoto && (
             <button
               type="button"
               onClick={() => updateDraft({ profilePhoto: "" })}
@@ -74,15 +75,18 @@ export function ProfilePhotoStep() {
         
         <div className="flex gap-4">
           <Button type="button" variant="outline" onClick={() => fileInputRef.current?.click()}>
-            {trustCardDraft.profilePhoto ? "Change Photo" : "Choose File"}
+            {draft.profilePhoto ? "Change Photo" : "Choose File"}
           </Button>
         </div>
       </div>
 
-      <WizardNavigation 
-        onPrevious={previousStep}
-        nextLabel={trustCardDraft.profilePhoto ? "Next Step" : "Skip for now"}
-      />
+      {!isEditorMode && (
+        <WizardNavigation 
+          onPrevious={previousStep}
+          nextLabel={draft.profilePhoto ? "Next Step" : "Skip for now"}
+        />
+      )}
     </form>
   )
 }
+

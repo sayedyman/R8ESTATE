@@ -6,7 +6,7 @@ import { SectionTitle } from "@/components/ui/section-title"
 import { FeatureCard } from "@/components/ui/feature-card"
 import { motion } from "framer-motion"
 import { Shield, Target, UserCheck, Share2, Star, Lock } from "lucide-react"
-import { useTranslations } from "next-intl"
+import { useTranslations } from "@/hooks/use-translations"
 
 const features = [
   {
@@ -89,3 +89,4 @@ export function Benefits() {
     </section>
   )
 }
+

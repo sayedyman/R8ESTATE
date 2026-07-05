@@ -7,7 +7,7 @@ import { buttonVariants } from "@/components/ui/button"
 import Link from "next/link"
 import { ROUTES } from "@/constants/routes"
 import { CheckCircle2, ShieldCheck, Lock, Target, Database, TrendingUp, Star } from "lucide-react"
-import { useTranslations } from "next-intl"
+import { useTranslations } from "@/hooks/use-translations"
 
 export function FinalCTA() {
   const t = useTranslations("finalCta")
@@ -128,3 +128,4 @@ export function FinalCTA() {
     </section>
   )
 }
+

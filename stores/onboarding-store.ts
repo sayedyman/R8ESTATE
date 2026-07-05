@@ -4,6 +4,7 @@ import { persist, createJSONStorage } from 'zustand/middleware'
 export type Goal = 'More Leads' | 'More Referrals' | 'More Deals' | 'More Authority' | null
 
 export interface Experience {
+  id: string
   jobTitle: string
   company: string
   startDate: string
@@ -11,9 +12,23 @@ export interface Experience {
   description: string
 }
 
-export interface Achievement {
+export interface Testimonial {
+  id: string
+  clientName: string
+  role: string
+  quote: string
+  rating?: number
+}
+
+export type VerificationType = 'Identity' | 'Certification' | 'License' | 'Award' | 'Membership' | 'Document' | 'Other'
+
+export interface VerificationEntry {
+  id: string
+  type: VerificationType
   title: string
-  description: string
+  description?: string
+  status: 'Pending' | 'Verified' | 'Rejected'
+  metadata?: Record<string, any>
 }
 
 export interface TrustCardDraft {
@@ -28,8 +43,9 @@ export interface TrustCardDraft {
   linkedIn: string
   website: string
   phoneNumber: string
-  experience: Experience | null
-  achievement: Achievement | null
+  experiences: Experience[]
+  testimonials: Testimonial[]
+  verifications: VerificationEntry[]
   trustScore?: number
   profileCompletion?: number
   verificationStatus?: string
@@ -50,8 +66,9 @@ const defaultTrustCardDraft: TrustCardDraft = {
   linkedIn: '',
   website: '',
   phoneNumber: '',
-  experience: null,
-  achievement: null,
+  experiences: [],
+  testimonials: [],
+  verifications: [],
   trustScore: 0,
   profileCompletion: 0,
   verificationStatus: 'Pending',
@@ -175,8 +192,8 @@ export const useOnboardingStore = create<OnboardingState>()(
         })
     }),
     {
-      name: 'onboarding-storage', // key in localStorage
-      storage: createJSONStorage(() => localStorage),
+      name: 'onboarding-storage', // key in sessionStorage
+      storage: createJSONStorage(() => sessionStorage),
     }
   )
 )

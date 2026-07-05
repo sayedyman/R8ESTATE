@@ -10,16 +10,6 @@ interface UseCVImportReturn {
   reset: () => void
 }
 
-/**
- * useCVImport — client hook encapsulating the full CV import pipeline.
- *
- * Orchestrates:
- * 1. POST /api/cv/upload  → receives Supabase storage path
- * 2. POST /api/cv/extract → receives structured ExtractedCVData
- *
- * The hook never touches AI or storage directly — all business logic
- * is on the server side.
- */
 export function useCVImport(): UseCVImportReturn {
   const [step, setStep] = useState<CVImportStep>('upload')
   const [error, setError] = useState<string | null>(null)
@@ -32,36 +22,36 @@ export function useCVImport(): UseCVImportReturn {
     setError(null)
 
     try {
-      // Step 1: Upload the PDF
-      const uploadFormData = new FormData()
-      uploadFormData.append('file', file)
+      // Simulate network request and AI processing (2-3 seconds)
+      await new Promise((resolve) => setTimeout(resolve, 2500))
 
-      const uploadResponse = await fetch('/api/cv/upload', {
-        method: 'POST',
-        body: uploadFormData,
-      })
-
-      if (!uploadResponse.ok) {
-        const body = await uploadResponse.json()
-        throw new Error(body.error || 'Upload failed.')
+      // Generate realistic mock data
+      const mockData: ExtractedCVData = {
+        fullName: "Sarah Jenkins",
+        jobTitle: "Senior Real Estate Consultant",
+        company: "Prestige Properties",
+        shortBio: "Dedicated real estate professional with over 8 years of experience specializing in luxury properties and off-plan sales. Proven track record of exceeding sales targets and delivering exceptional client experiences.",
+        yearsOfExperience: "8",
+        phone: "+1 555 123 4567",
+        email: "sarah.jenkins@prestigeproperties.com",
+        website: "https://sarahjenkins.realestate",
+        linkedIn: "https://linkedin.com/in/sarahjenkins-re",
+        specialization: "Luxury Property",
+        strengths: ["Negotiation", "Client Relations"],
+        experience: {
+          jobTitle: "Senior Real Estate Consultant",
+          company: "Prestige Properties",
+          startDate: "05/2018",
+          endDate: "Present",
+          description: "Managed a portfolio of luxury properties, negotiating multi-million dollar deals and consistently ranking in the top 5% of agents nationwide."
+        },
+        achievement: {
+          title: "Top Sales Agent 2023",
+          description: "Closed over $45M in residential property sales, achieving the highest gross commission in the region."
+        }
       }
 
-      const { path } = await uploadResponse.json()
-
-      // Step 2: Extract structured data using AI
-      const extractResponse = await fetch('/api/cv/extract', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ path }),
-      })
-
-      if (!extractResponse.ok) {
-        const body = await extractResponse.json()
-        throw new Error(body.error || 'Extraction failed.')
-      }
-
-      const { data } = await extractResponse.json()
-      setExtractedData(data)
+      setExtractedData(mockData)
       setStep('review')
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Something went wrong. Please try again.'

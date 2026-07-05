@@ -1,6 +1,6 @@
 import * as React from "react"
 import { Button } from "@/components/ui/button"
-import { useTranslations } from "next-intl"
+import { useTranslations } from "@/hooks/use-translations"
 
 interface WizardNavigationProps {
   onNext?: () => void;
@@ -61,3 +61,4 @@ export function WizardNavigation({
     </div>
   )
 }
+

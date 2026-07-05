@@ -7,17 +7,12 @@ import { Button } from "@/components/ui/button"
 import { Edit, Share2, Link as LinkIcon, Info, X, CheckCircle2 } from "lucide-react"
 import { useOnboardingStore } from "@/stores/onboarding-store"
 import { ShareModal } from "./share-modal"
-import { motion, AnimatePresence } from "framer-motion"
-import { generateSlug } from "@/lib/services/trust-card.service"
-import { useSession } from "next-auth/react"
-import { TrustCardService } from "@/lib/services/trust-card.service"
-import { updateTrustCardAction } from "@/lib/actions/trust-card.actions"
-import { updateUserAction } from "@/lib/actions/user.actions"
-import { useTranslations } from "next-intl"
+import { useAuthStore } from "@/stores/auth-store"
+import { useTranslations } from "@/hooks/use-translations"
 
 export function OwnerPreviewBanner() {
   const router = useRouter()
-  const { data: session } = useSession()
+  const { user } = useAuthStore()
   const t = useTranslations("profile")
   const { isInlineEditing, tempDraft, setInlineEditing, setTempDraft, updateDraft, trustCardDraft, savedTrustCard, userMode } = useOnboardingStore()
   const [toastMessage, setToastMessage] = React.useState("")
@@ -32,29 +27,6 @@ export function OwnerPreviewBanner() {
   const handleSave = async () => {
     if (tempDraft) {
       updateDraft(tempDraft)
-      
-      if (session?.user?.id) {
-        try {
-          const trustCardService = new TrustCardService()
-          const existingCard = await trustCardService.getTrustCardByUserId(session.user.id)
-          if (existingCard) {
-            // Update existing Trust Card record
-            await updateTrustCardAction(existingCard.id, {
-              ...tempDraft,
-              selected_goal: useOnboardingStore.getState().selectedGoal
-            } as any)
-
-            // Also update base user fields
-            await updateUserAction(session.user.id, {
-              full_name: tempDraft.fullName,
-              avatar_url: tempDraft.profilePhoto
-            })
-          }
-        } catch (err) {
-          console.error("Error saving edits to Supabase:", err)
-        }
-      }
-      
       showToast(t("ownerBanner.updateSuccess"))
     }
     setInlineEditing(false)
@@ -73,40 +45,17 @@ export function OwnerPreviewBanner() {
 
   const getUrl = () => {
     const draft = userMode === "registered" && savedTrustCard ? savedTrustCard : trustCardDraft;
-    // Use the stored permanent slug; fall back to generating from fullName for guest previews only
-    const slug = draft?.slug || (draft?.fullName ? generateSlug(draft.fullName) : "preview");
+    const slug = draft?.slug || "preview";
     return `${window.location.origin}/u/${slug}`;
   }
 
   const handleShare = async () => {
-    const url = getUrl()
-    const name = (userMode === "registered" && savedTrustCard ? savedTrustCard : trustCardDraft)?.fullName || "Agent"
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: `${name}'s Trust Card`,
-          text: "Check out my verified professional Trust Card profile!",
-          url,
-        })
-        return
-      } catch (err) {
-        console.warn("Native share failed, opening modal:", err)
-      }
-    }
     setIsShareOpen(true)
   }
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(getUrl())
     showToast(t("ownerBanner.copySuccess"))
-  }
-
-  const shareLinks = {
-    whatsapp: () => window.open(`https://wa.me/?text=${encodeURIComponent('Check out my Trust Card: ' + getUrl())}`),
-    linkedin: () => window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(getUrl())}`),
-    facebook: () => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(getUrl())}`),
-    twitter: () => window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(getUrl())}&text=${encodeURIComponent('Check out my Trust Card!')}`),
-    email: () => window.open(`mailto:?subject=My Trust Card&body=${encodeURIComponent('Check out my Trust Card here: ' + getUrl())}`)
   }
 
   return (
@@ -128,17 +77,6 @@ export function OwnerPreviewBanner() {
           {!isInlineEditing ? (
             <>
               <Button 
-                size="sm"
-                variant="ghost" 
-                className="h-9 text-slate-300 hover:text-white hover:bg-white/10 hidden sm:flex gap-2 disabled:opacity-50 disabled:pointer-events-none"
-                onClick={handleCopyLink}
-                disabled={userMode === "preview"}
-              >
-                <LinkIcon className="h-4 w-4" />
-                {t("ownerBanner.copyLink")}
-              </Button>
-              
-              <Button 
                 size="sm" 
                 variant="outline" 
                 className="h-9 bg-white/10 hover:bg-white/20 text-white border-0"
@@ -150,9 +88,9 @@ export function OwnerPreviewBanner() {
               
               <Button 
                 size="sm" 
-                className="h-9 bg-emerald-500 hover:bg-emerald-600 text-white border-0 disabled:opacity-50 disabled:pointer-events-none"
+                variant="default"
+                className="h-9"
                 onClick={handleShare}
-                disabled={userMode === "preview"}
               >
                 <Share2 className="h-4 w-4 mr-1.5 rtl:ml-1.5 rtl:mr-0" />
                 {t("ownerBanner.shareLink")}

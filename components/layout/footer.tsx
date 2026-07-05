@@ -3,7 +3,7 @@ import * as React from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { Container } from "@/components/ui/container"
-import { useTranslations } from "next-intl"
+import { useTranslations } from "@/hooks/use-translations"
 
 export function Footer() {
   const t = useTranslations("footer")
@@ -84,3 +84,4 @@ export function Footer() {
     </footer>
   )
 }
+

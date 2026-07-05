@@ -7,7 +7,7 @@ import { Progress } from "@/components/ui/progress"
 import { Card, CardContent } from "@/components/ui/card"
 import { CheckCircle2, ChevronRight } from "lucide-react"
 import { motion } from "framer-motion"
-import { useTranslations } from "next-intl"
+import { useTranslations } from "@/hooks/use-translations"
 
 const criteria = [
   { key: "identity", weight: 30, completed: true },
@@ -123,3 +123,4 @@ export function TrustScore() {
     </section>
   )
 }
+

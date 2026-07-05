@@ -6,7 +6,7 @@ import { SectionTitle } from "@/components/ui/section-title"
 import { IconCard } from "@/components/ui/icon-card"
 import { motion } from "framer-motion"
 import { ShieldCheck, UserCheck, Share, Sparkles, Building2, Smartphone, TrendingUp } from "lucide-react"
-import { useTranslations } from "next-intl"
+import { useTranslations } from "@/hooks/use-translations"
 
 const reasons = [
   { icon: Sparkles, key: "professionalTrustCard" },
@@ -54,3 +54,4 @@ export function WhyChooseUs() {
     </section>
   )
 }
+

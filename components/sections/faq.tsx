@@ -13,7 +13,7 @@ import { motion } from "framer-motion"
 import { HeadphonesIcon, MessageCircleQuestion } from "lucide-react"
 import { buttonVariants } from "@/components/ui/button"
 import Link from "next/link"
-import { useTranslations } from "next-intl"
+import { useTranslations } from "@/hooks/use-translations"
 
 const faqs = [
   { key: "1" },
@@ -112,3 +112,4 @@ export function FAQ() {
     </section>
   )
 }
+

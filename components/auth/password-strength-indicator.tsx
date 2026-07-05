@@ -1,7 +1,7 @@
 import * as React from "react"
 import { Check, Circle } from "lucide-react"
 import { calculatePasswordStrength, type PasswordStrengthResult } from "@/lib/password-strength"
-import { useTranslations } from "next-intl"
+import { useTranslations } from "@/hooks/use-translations"
 
 interface PasswordStrengthIndicatorProps {
   password?: string
@@ -41,3 +41,4 @@ export function PasswordStrengthIndicator({ password = "" }: PasswordStrengthInd
     </div>
   )
 }
+

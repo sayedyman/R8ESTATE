@@ -58,4 +58,8 @@
 - **Supportive Weekly Goal Widget**: Redesigned the Weekly Goal from a dominant, heavy card (`bg-slate-900`) into a horizontal, visually lightweight widget (`bg-white`) placed below the KPI cards. Replaced raw number emphasis with an actionable "Share Your Profile" CTA to encourage goal completion without dominating the interface.
 - **Uniform Metric Cards**: Standardized the Executive Summary metric cards (Profile Views, Contact Clicks, etc.) to use the native `<Card>` component with CSS grid and array mapping. This guarantees identical dimensions, padding, icon positioning, and typography across all summary cards.
 
+## Development Environment Authentication
+- **Dual Auth Architecture**: Implemented a hybrid authentication strategy where a custom Auth.js Credentials Provider is exclusively enabled in development mode (`NODE_ENV=development`), providing frictionless local testing without compromising production security, where only secure providers (like Google OAuth) will run.
 
+## Trust Card Editor Redesign
+- **Isolated Editor Module**: Created a dedicated `components/dashboard/trust-card-editor/` directory to house the Trust Card Editor logic, keeping the main dashboard clean and preserving the Single Responsibility Principle for editing functionality.

@@ -14,6 +14,29 @@ export default function PublishPage() {
   const { trustCardDraft, completeOnboarding } = useOnboardingStore()
   const [publishState, setPublishState] = React.useState<"idle" | "publishing" | "success">("idle")
 
+  const getProfileUrl = () => {
+    const slug = trustCardDraft.slug || (trustCardDraft.fullName
+      ? trustCardDraft.fullName.toLowerCase().trim().replace(/[^\w\s-]/g, "").replace(/[\s_-]+/g, "-").replace(/^-+|-+$/g, "")
+      : "profile")
+    return typeof window !== "undefined" ? `${window.location.origin}/u/${slug}` : `/u/${slug}`
+  }
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(getProfileUrl())
+    alert("Public link copied to clipboard!")
+  }
+
+  const handleShare = async () => {
+    if (navigator.share) {
+      await navigator.share({
+        title: `${trustCardDraft.fullName}'s Trust Card`,
+        url: getProfileUrl()
+      }).catch(() => {})
+    } else {
+      handleCopyLink()
+    }
+  }
+
   const handleCompleteProfile = () => {
     router.push(`${ROUTES.SIGNUP}?callbackUrl=${encodeURIComponent(ROUTES.DASHBOARD)}`)
   }
@@ -66,17 +89,17 @@ export default function PublishPage() {
                 variant="ghost" 
                 size="icon" 
                 title="Copy Link"
-                disabled
-                className="opacity-50 pointer-events-none text-slate-300"
+                className="text-slate-500 hover:text-slate-900"
+                onClick={handleCopyLink}
               >
                 <Copy className="h-4 w-4" />
               </Button>
-              <Button variant="ghost" size="icon" title="Download" disabled className="opacity-50 pointer-events-none text-slate-300"><Download className="h-4 w-4" /></Button>
-              <Button variant="ghost" size="icon" title="Share" disabled className="opacity-50 pointer-events-none text-slate-300"><Share2 className="h-4 w-4" /></Button>
+              <Button variant="ghost" size="icon" title="Open Profile" className="text-slate-500 hover:text-slate-900" onClick={() => window.open(getProfileUrl(), '_blank')}><Eye className="h-4 w-4" /></Button>
+              <Button variant="ghost" size="icon" title="Share" className="text-slate-500 hover:text-slate-900" onClick={handleShare}><Share2 className="h-4 w-4" /></Button>
             </div>
           </div>
           <div className="text-xs text-slate-500 bg-slate-50 p-2.5 rounded-lg border border-slate-100 text-center font-medium">
-            Create your free account to publish and share your Trust Card.
+            Your Trust Card is ready! Copy the link or share it directly.
           </div>
         </div>
       </div>
@@ -153,8 +176,8 @@ export default function PublishPage() {
                 onClick={handleContinuePublishing}
                 disabled={publishState !== "idle"}
               >
-                {publishState === "idle" && "Continue without signing up"}
-                {publishState === "publishing" && "Continuing..."}
+                {publishState === "idle" && "Publish Trust Card"}
+                {publishState === "publishing" && "Publishing..."}
                 {publishState === "success" && "✓ Done."}
               </Button>
             </div>

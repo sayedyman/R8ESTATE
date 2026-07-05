@@ -7,8 +7,7 @@ import { SummaryMetrics, ContactRateRating } from "@/types/dashboard"
 import { useRouter } from "next/navigation"
 import { ROUTES } from "@/constants/routes"
 import { useOnboardingStore } from "@/stores/onboarding-store"
-import { AnalyticsService } from "@/lib/services/analytics.service"
-import { useTranslations } from "next-intl"
+import { useTranslations } from "@/hooks/use-translations"
 import { ShareModal } from "../../profile/share-modal"
 
 interface GoalSummaryProps {
@@ -63,16 +62,7 @@ export function GoalSummary({
 
   const trackShare = async () => {
     if (!ownerUserId) return
-    try {
-      const analyticsService = new AnalyticsService()
-      await analyticsService.trackEvent({
-        ownerUserId,
-        eventType: "profile_share",
-        source: "web"
-      })
-    } catch (err) {
-      console.error("Failed to track share event:", err)
-    }
+    console.log("Mock tracking share event")
   }
 
   const handleCopyLink = () => {
@@ -237,4 +227,5 @@ export function GoalSummary({
     </div>
   )
 }
+
 

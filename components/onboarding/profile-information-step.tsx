@@ -10,12 +10,13 @@ import { FileText } from "lucide-react"
 import { WizardNavigation } from "@/components/onboarding/wizard-navigation"
 import { CvImportModal } from "@/components/onboarding/cv-import-modal"
 import { AnimatePresence } from "framer-motion"
-import { useTranslations } from "next-intl"
+import { useTranslations } from "@/hooks/use-translations"
 
-export function ProfileInformationStep() {
+export function ProfileInformationStep({ isEditorMode, section = "all" }: { isEditorMode?: boolean, section?: "all" | "basic" | "contact" } = {}) {
   const t = useTranslations("onboarding.wizard")
-  const { trustCardDraft, updateDraft, nextStep, previousStep } = useOnboardingStore()
-  const [isManual, setIsManual] = React.useState(!!trustCardDraft.fullName)
+  const { trustCardDraft, savedTrustCard, userMode, updateDraft, nextStep, previousStep } = useOnboardingStore()
+  const draft = userMode === "registered" && savedTrustCard ? savedTrustCard : trustCardDraft;
+  const [isManual, setIsManual] = React.useState(!!draft.fullName)
   const [showCvModal, setShowCvModal] = React.useState(false)
 
   const handleNext = (e: React.FormEvent) => {
@@ -32,7 +33,7 @@ export function ProfileInformationStep() {
     setIsManual(true)
   }
 
-  if (!isManual) {
+  if (!isManual && !isEditorMode) {
     return (
       <div className="space-y-8 flex flex-col items-center justify-center py-10">
         {/* CV Import Modal */}
@@ -91,32 +92,31 @@ export function ProfileInformationStep() {
 
   return (
     <form onSubmit={handleNext} className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {(section === "all" || section === "basic") && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-2">
           <Label htmlFor="fullName">{t("fullName")}</Label>
           <Input 
             id="fullName" 
-            value={trustCardDraft.fullName}
+            value={draft.fullName}
             onChange={(e) => updateDraft({ fullName: e.target.value })}
             placeholder="e.g. Jonathan Davis"
-            required
           />
         </div>
         <div className="space-y-2">
           <Label htmlFor="jobTitle">{t("jobTitle")}</Label>
           <Input 
             id="jobTitle" 
-            value={trustCardDraft.jobTitle}
+            value={draft.jobTitle}
             onChange={(e) => updateDraft({ jobTitle: e.target.value })}
             placeholder="e.g. Senior Consultant"
-            required
           />
         </div>
         <div className="space-y-2">
           <Label htmlFor="company">{t("company")}</Label>
           <Input 
             id="company" 
-            value={trustCardDraft.company}
+            value={draft.company}
             onChange={(e) => updateDraft({ company: e.target.value })}
             placeholder="e.g. Elite Realty"
           />
@@ -127,31 +127,32 @@ export function ProfileInformationStep() {
             id="yearsOfExperience" 
             type="number"
             min="0"
-            value={trustCardDraft.yearsOfExperience}
+            value={draft.yearsOfExperience}
             onChange={(e) => updateDraft({ yearsOfExperience: e.target.value })}
             placeholder="e.g. 5"
-            required
           />
         </div>
         <div className="space-y-2 col-span-full">
           <Label htmlFor="shortBio">{t("shortBio")}</Label>
           <Textarea 
             id="shortBio" 
-            value={trustCardDraft.shortBio}
+            value={draft.shortBio}
             onChange={(e) => updateDraft({ shortBio: e.target.value })}
             className="h-24 resize-none"
             placeholder="Briefly describe your expertise and approach..."
-            required
           />
         </div>
       </div>
+      )}
+
+      {(section === "all" || section === "contact") && (
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="space-y-2">
           <Label htmlFor="linkedIn">{t("linkedIn")}</Label>
           <Input 
             id="linkedIn" 
             type="url"
-            value={trustCardDraft.linkedIn}
+            value={draft.linkedIn}
             onChange={(e) => updateDraft({ linkedIn: e.target.value })}
             placeholder="https://linkedin.com/in/..."
           />
@@ -161,7 +162,7 @@ export function ProfileInformationStep() {
           <Input 
             id="website" 
             type="url"
-            value={trustCardDraft.website}
+            value={draft.website}
             onChange={(e) => updateDraft({ website: e.target.value })}
             placeholder="https://..."
           />
@@ -171,17 +172,21 @@ export function ProfileInformationStep() {
           <Input 
             id="phoneNumber" 
             type="tel"
-            value={trustCardDraft.phoneNumber}
+            value={draft.phoneNumber}
             onChange={(e) => updateDraft({ phoneNumber: e.target.value })}
             placeholder="+1 234 567 8900"
           />
         </div>
       </div>
+      )}
 
-      <WizardNavigation 
-        onPrevious={previousStep}
-        nextLabel="Next"
-      />
+      {!isEditorMode && (
+        <WizardNavigation 
+          onPrevious={previousStep}
+          nextLabel="Next"
+        />
+      )}
     </form>
   )
 }
+

@@ -8,10 +8,9 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { useCVImport } from "@/hooks/use-cv-import"
-import { CVImportUtils } from "@/lib/utils/cv-import.utils"
 import type { ExtractedCVData } from "@/types/cv-import.types"
 import { useOnboardingStore } from "@/stores/onboarding-store"
-import { useTranslations } from "next-intl"
+import { useTranslations } from "@/hooks/use-translations"
 
 interface CvImportModalProps {
   onClose: () => void
@@ -106,7 +105,29 @@ export function CvImportModal({ onClose, onSuccess }: CvImportModalProps) {
 
   const handleConfirm = () => {
     if (!reviewData) return
-    const draftUpdate = CVImportUtils.mapExtractedDataToDraft(reviewData)
+    const draftUpdate = {
+      fullName: reviewData.fullName || '',
+      jobTitle: reviewData.jobTitle || '',
+      company: reviewData.company || '',
+      shortBio: reviewData.shortBio || reviewData.strengths?.join(', ') || '',
+      yearsOfExperience: reviewData.yearsOfExperience || '',
+      linkedIn: reviewData.linkedIn || '',
+      website: reviewData.website || '',
+      phoneNumber: reviewData.phone || '',
+      specialization: reviewData.specialization || '',
+      biggestStrength: reviewData.strengths?.join(', ') || '',
+      experience: reviewData.experience ? {
+        jobTitle: reviewData.experience.jobTitle || '',
+        company: reviewData.experience.company || '',
+        startDate: reviewData.experience.startDate || '',
+        endDate: reviewData.experience.endDate || '',
+        description: reviewData.experience.description || ''
+      } : null,
+      achievement: reviewData.achievement ? {
+        title: reviewData.achievement.title || '',
+        description: reviewData.achievement.description || ''
+      } : null,
+    }
     updateDraft(draftUpdate)
     onSuccess()
   }
@@ -561,3 +582,4 @@ function ReviewField({ label, id, value, onChange, placeholder }: ReviewFieldPro
     </div>
   )
 }
+

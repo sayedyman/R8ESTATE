@@ -1,4 +1,4 @@
-{
+export const messages = {
   "common": {
     "appName": "R8ESTATE",
     "tagline": "Professional Reputation for Real Estate Agents",
@@ -351,6 +351,7 @@
   "dashboard": {
     "overview": "Overview",
     "trustCard": "Trust Card",
+    "portfolio": "Portfolio",
     "verification": "Verification",
     "settings": "Settings",
     "trustScore": "Trust Score",
@@ -389,8 +390,6 @@
     "greeting": "Good morning",
     "greetingAfternoon": "Good afternoon",
     "greetingEvening": "Good evening",
-    "trustScore": "Trust Score",
-    "support": "Contact Support",
     "comingSoon": "Coming Soon"
   },
   "profile": {
@@ -437,3 +436,4 @@
     }
   }
 }
+;

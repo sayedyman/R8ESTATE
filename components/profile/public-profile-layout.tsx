@@ -130,16 +130,16 @@ export function PublicProfileLayout({ isOwnerPreview }: { isOwnerPreview?: boole
                 <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400 mb-4 flex items-center gap-2">
                   <Building className="h-4 w-4" /> Experience
                 </h3>
-                {draft.experience ? (
+                {draft.experiences && draft.experiences.length > 0 ? (
                   <div className="bg-slate-50 rounded-xl p-5 border border-slate-100">
-                    <h4 className="font-bold text-slate-900 text-base">{draft.experience.jobTitle}</h4>
-                    <p className="text-primary font-medium text-sm mb-1">{draft.experience.company}</p>
+                    <h4 className="font-bold text-slate-900 text-base">{draft.experiences[0].jobTitle}</h4>
+                    <p className="text-primary font-medium text-sm mb-1">{draft.experiences[0].company}</p>
                     <p className="text-slate-500 text-xs mb-3 font-medium">
-                      {draft.experience.startDate} – {draft.experience.endDate}
+                      {draft.experiences[0].startDate} – {draft.experiences[0].endDate}
                     </p>
-                    {draft.experience.description && (
+                    {draft.experiences[0].description && (
                       <p className="text-slate-600 text-sm leading-relaxed">
-                        {draft.experience.description}
+                        {draft.experiences[0].description}
                       </p>
                     )}
                   </div>
@@ -155,11 +155,11 @@ export function PublicProfileLayout({ isOwnerPreview }: { isOwnerPreview?: boole
                 <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400 mb-4 flex items-center gap-2">
                   <Trophy className="h-4 w-4" /> Key Achievement
                 </h3>
-                {draft.achievement ? (
+                {draft.verifications && draft.verifications.length > 0 ? (
                   <div className="bg-slate-50 rounded-xl p-5 border border-slate-100">
-                    <h4 className="font-bold text-slate-900 text-base mb-2">{draft.achievement.title}</h4>
+                    <h4 className="font-bold text-slate-900 text-base mb-2">{draft.verifications[0].title}</h4>
                     <p className="text-slate-600 text-sm leading-relaxed">
-                      {draft.achievement.description}
+                      {draft.verifications[0].description}
                     </p>
                   </div>
                 ) : (

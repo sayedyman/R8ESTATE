@@ -2,9 +2,9 @@
 
 import * as React from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { X, Copy, Mail } from "lucide-react"
+import { X, Copy, Link as LinkIcon, Send as TelegramIcon } from "lucide-react"
 import { Facebook, Twitter, Linkedin, Whatsapp } from "@/components/ui/social-icons"
-import { useTranslations } from "next-intl"
+import { useTranslations } from "@/hooks/use-translations"
 
 interface ShareModalProps {
   isOpen: boolean
@@ -39,9 +39,9 @@ export function ShareModal({ isOpen, onClose, url, onShare }: ShareModalProps) {
       if (onShare) onShare()
       window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent('Check out my Trust Card!')}`)
     },
-    email: () => {
+    telegram: () => {
       if (onShare) onShare()
-      window.open(`mailto:?subject=My Trust Card&body=${encodeURIComponent('Check out my Trust Card here: ' + url)}`)
+      window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent('Check out my Trust Card!')}`)
     }
   }
 
@@ -73,6 +73,11 @@ export function ShareModal({ isOpen, onClose, url, onShare }: ShareModalProps) {
             >
               <X className="h-4 w-4" />
             </button>
+
+            {/* Link Badge */}
+            <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 bg-primary rounded-2xl flex items-center justify-center shadow-lg border-4 border-white">
+              <LinkIcon className="h-5 w-5 text-white" />
+            </div>
 
             {/* Header */}
             <h3 className="text-xl font-bold text-slate-900 pr-8">{t("share.title")}</h3>
@@ -150,26 +155,15 @@ export function ShareModal({ isOpen, onClose, url, onShare }: ShareModalProps) {
                 <span className="truncate">{t("share.facebook")}</span>
               </button>
 
-              {/* Email */}
+              {/* Telegram */}
               <button 
-                onClick={shareLinks.email}
+                onClick={shareLinks.telegram}
                 className="flex items-center gap-3 px-3 py-2.5 rounded-xl border border-slate-100 bg-slate-50/50 hover:bg-slate-50 hover:border-slate-200 transition-all text-slate-700 font-semibold text-[13.5px] text-start active:scale-[0.98] cursor-pointer"
               >
-                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-red-50 text-red-500 shrink-0">
-                  <Mail className="h-4.5 w-4.5" />
+                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-blue-50 text-blue-500 shrink-0">
+                  <TelegramIcon className="h-4.5 w-4.5 -ml-0.5 mt-0.5" />
                 </div>
-                <span className="truncate">{t("share.email")}</span>
-              </button>
-
-              {/* Copy Link */}
-              <button 
-                onClick={handleCopyLink}
-                className="flex items-center gap-3 px-3 py-2.5 rounded-xl border border-slate-100 bg-slate-50/50 hover:bg-slate-50 hover:border-slate-200 transition-all text-slate-700 font-semibold text-[13.5px] text-start active:scale-[0.98] cursor-pointer"
-              >
-                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-slate-100 text-slate-600 shrink-0">
-                  <Copy className="h-4.5 w-4.5" />
-                </div>
-                <span className="truncate">{t("share.copyLink")}</span>
+                <span className="truncate">Telegram</span>
               </button>
             </div>
 
@@ -183,3 +177,4 @@ export function ShareModal({ isOpen, onClose, url, onShare }: ShareModalProps) {
     </AnimatePresence>
   )
 }
+

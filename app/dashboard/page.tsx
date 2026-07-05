@@ -3,16 +3,15 @@
 import * as React from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useOnboardingStore } from "@/stores/onboarding-store"
-import { Shield, LayoutDashboard, BadgeCheck, ShieldCheck, Settings, LogOut, LifeBuoy } from "lucide-react"
-import { useDataHydration } from "@/hooks/use-data-hydration"
-import { useDashboardAnalytics } from "@/hooks/use-dashboard-analytics"
-import { useAuthSync } from "@/hooks/use-auth-sync"
-import { useSession, signOut } from "next-auth/react"
+import { Shield, LayoutDashboard, BadgeCheck, ShieldCheck, Settings, LogOut, LifeBuoy, Briefcase } from "lucide-react"
+import { useAuthStore } from "@/stores/auth-store"
 import Link from "next/link"
 import { ROUTES } from "@/constants/routes"
 import dynamic from "next/dynamic"
-import { useTranslations } from "next-intl"
-import { LanguageSwitcher } from "@/components/ui/language-switcher"
+import { useTranslations } from "@/hooks/use-translations"
+import TrustCardEditorView from "@/components/dashboard/trust-card-editor-view"
+import { VerificationManager } from "@/components/dashboard/verification/verification-manager"
+import { SettingsManager } from "@/components/dashboard/settings/settings-manager"
 
 // Dynamically load the Goal Dashboard
 const GoalDashboard = dynamic(() => import("@/components/dashboard/goal-dashboard"), {
@@ -41,39 +40,48 @@ function DashboardContent() {
   const isDemo = searchParams.get("demo") === "true"
   const t = useTranslations("dashboard")
 
-  // Load user data from Supabase on mount
-  const { isHydrated } = useDataHydration()
-
-  // Sync guest draft to Supabase when a new user signs in via Google
-  const { isSyncing } = useAuthSync()
-
-  // Session — used to detect newly signed-in users whose onboarding isn't complete yet
-  const { data: session } = useSession()
-  const isNewUser = session?.user && !(session.user as any).isOnboardingCompleted
-
-  // Fetch real Supabase aggregated metrics & insights
-  const { analyticsConfig, isLoading: isAnalyticsLoading, hasNoAnalytics: hasNoRealAnalytics, userId } = useDashboardAnalytics()
-
+  const { isAuthenticated, logout } = useAuthStore()
   const { trustCardDraft, savedTrustCard, selectedGoal, reset, userMode } = useOnboardingStore()
   const [mounted, setMounted] = React.useState(false)
-  const [activeTab, setActiveTab] = React.useState("Overview")
+  const [activeTab, setActiveTab] = React.useState("Trust Card") // Defaulting to Trust Card for this phase
+  const [activeTrustCardSection, setActiveTrustCardSection] = React.useState("Basic Information")
+
+  const scrollToSection = (sectionId: string) => {
+    setActiveTrustCardSection(sectionId)
+    const element = document.getElementById(sectionId)
+    const container = document.getElementById("editor-scroll-container")
+    
+    if (element && container) {
+      const containerTop = container.getBoundingClientRect().top
+      const elementTop = element.getBoundingClientRect().top
+      const scrollTop = container.scrollTop
+      
+      container.scrollTo({
+        top: scrollTop + elementTop - containerTop - 32,
+        behavior: "smooth"
+      })
+    }
+  }
 
   React.useEffect(() => {
-    // Don't do anything while hydrating or while useAuthSync is saving a new user's draft
-    if (!isHydrated || isSyncing) return
+    setMounted(true)
+  }, [])
 
-    // If a new user just signed in (isOnboardingCompleted=false in session) but is still
-    // in the process of being synced, hold off on any redirect
-    if (isNewUser) return
+  React.useEffect(() => {
+    if (!mounted) return
+
+    if (!isAuthenticated && !isDemo) {
+      router.replace(ROUTES.LOGIN)
+      return
+    }
 
     if (useOnboardingStore.getState().userMode === "preview") {
       router.replace(ROUTES.PROFILE + "?preview=true")
       return
     }
-    setMounted(true)
-  }, [router, isHydrated, isSyncing, isNewUser])
+  }, [router, mounted, isAuthenticated, isDemo])
 
-  if (!isHydrated || isSyncing || isNewUser || !mounted || (isAnalyticsLoading && !isDemo)) {
+  if (!mounted || (!isAuthenticated && !isDemo)) {
     return (
       <div className="flex items-center justify-center h-screen bg-slate-50 w-full">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -85,15 +93,14 @@ function DashboardContent() {
   const firstName = baseCard.fullName ? baseCard.fullName.split(" ")[0] : "Agent"
   const currentConfig = getGoalConfig(selectedGoal)
 
-  const configToUse = isDemo ? currentConfig : (analyticsConfig || currentConfig)
-  const hasNoAnalytics = isDemo ? false : hasNoRealAnalytics
+  const configToUse = currentConfig
+  const hasNoAnalytics = false
   const trustScore = baseCard.trustScore || 80
   
   const handleLogout = async () => {
     reset()
-    localStorage.clear()
-    sessionStorage.clear()
-    await signOut({ callbackUrl: ROUTES.LOGIN })
+    logout()
+    router.push(ROUTES.LOGIN)
   }
 
   return (
@@ -114,14 +121,47 @@ function DashboardContent() {
             {t("overview")}
           </button>
           
-          <button 
-            onClick={() => setActiveTab("Trust Card")}
-            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium transition-colors text-start ${activeTab === "Trust Card" ? "bg-primary/5 text-primary" : "text-slate-600 hover:bg-slate-50"}`}
-          >
-            <BadgeCheck className="h-5 w-5" />
-            {t("trustCard")}
-          </button>
+          <div className="space-y-1">
+            <button 
+              onClick={() => setActiveTab("Trust Card")}
+              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg font-medium transition-colors text-start ${activeTab === "Trust Card" ? "bg-primary/5 text-primary" : "text-slate-600 hover:bg-slate-50"}`}
+            >
+              <div className="flex items-center gap-3">
+                <BadgeCheck className="h-5 w-5" />
+                {t("trustCard")}
+              </div>
+            </button>
+            
+            {activeTab === "Trust Card" && (
+              <div className="ml-9 space-y-1 mt-1 border-l-2 border-slate-100 pl-2">
+                {[
+                  "Basic Information",
+                  "Trust Signals",
+                  "Experience",
+                  "Testimonials",
+                  "Contact",
+                  "Appearance"
+                ].map((section) => (
+                  <button
+                    key={section}
+                    onClick={() => scrollToSection(section)}
+                    className={`w-full text-start px-3 py-1.5 rounded-md text-sm transition-colors ${
+                      activeTrustCardSection === section
+                        ? "text-primary font-medium bg-primary/5"
+                        : "text-slate-500 hover:text-slate-800 hover:bg-slate-50"
+                    }`}
+                  >
+                    <span className="flex items-center gap-2">
+                      <span className={`h-1.5 w-1.5 rounded-full ${activeTrustCardSection === section ? "bg-primary" : "bg-transparent"}`} />
+                      {section}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
           
+
           <button 
             onClick={() => setActiveTab("Verification")}
             className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium transition-colors text-start ${activeTab === "Verification" ? "bg-primary/5 text-primary" : "text-slate-600 hover:bg-slate-50"}`}
@@ -185,7 +225,6 @@ function DashboardContent() {
             <span className="font-bold text-lg text-slate-900 tracking-tight">R8ESTATE</span>
           </Link>
           <div className="flex items-center gap-3">
-            <LanguageSwitcher />
             <button 
               onClick={handleLogout}
               className="text-sm font-medium text-slate-500 flex items-center gap-2"
@@ -203,8 +242,17 @@ function DashboardContent() {
               firstName={firstName} 
               config={configToUse} 
               hasNoAnalytics={hasNoAnalytics} 
-              ownerUserId={userId}
+              ownerUserId={"mock-user-id"}
             />
+          ) : activeTab === "Trust Card" ? (
+            <TrustCardEditorView 
+              activeSection={activeTrustCardSection} 
+              onSectionChange={setActiveTrustCardSection} 
+            />
+          ) : activeTab === "Verification" ? (
+            <VerificationManager />
+          ) : activeTab === "Settings" ? (
+            <SettingsManager />
           ) : (
             <div className="flex items-center justify-center h-full">
               <h1 className="text-3xl font-bold text-slate-400">{activeTab}</h1>
@@ -214,6 +262,4 @@ function DashboardContent() {
       </div>
     </div>
   )
-
-
 }

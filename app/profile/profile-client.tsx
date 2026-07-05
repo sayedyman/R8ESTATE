@@ -7,15 +7,16 @@ import { OwnerPreviewBanner } from "@/components/profile/owner-preview-banner"
 import { useOnboardingStore } from "@/stores/onboarding-store"
 import { ROUTES } from "@/constants/routes"
 
-import { useDataHydration } from "@/hooks/use-data-hydration"
-
 export default function ProfileClient() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const isPreview = searchParams.get("preview") === "true"
 
-  // Hydrate card state from Supabase
-  useDataHydration()
+  const [mounted, setMounted] = React.useState(false)
+
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const { trustCardDraft, savedTrustCard, userMode } = useOnboardingStore()
 
@@ -28,7 +29,7 @@ export default function ProfileClient() {
     }
   }, [baseCard.fullName, router])
 
-  if (!baseCard.fullName) {
+  if (!mounted || !baseCard.fullName) {
     return null
   }
 
