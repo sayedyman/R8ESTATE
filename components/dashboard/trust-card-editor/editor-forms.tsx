@@ -5,8 +5,8 @@ import { ProfilePhotoStep } from "@/components/onboarding/profile-photo-step"
 import { ProfileInformationStep } from "@/components/onboarding/profile-information-step"
 import { SpecializationStep } from "@/components/onboarding/specialization-step"
 import { StrengthStep } from "@/components/onboarding/strength-step"
-import { ExperienceStep } from "@/components/onboarding/experience-step"
-import { TestimonialStep } from "@/components/onboarding/testimonial-step"
+import { ExperienceManager } from "@/components/dashboard/trust-card-editor/experience-manager"
+import { TestimonialManager } from "@/components/dashboard/trust-card-editor/testimonial-manager"
 
 export function EditorForms() {
   return (
@@ -51,7 +51,7 @@ export function EditorForms() {
           <p className="text-sm text-slate-500 mt-1">Manage your work history to show your track record.</p>
         </div>
         <div className="bg-white rounded-lg p-1">
-          <ExperienceStep isEditorMode={true} />
+          <ExperienceManager isEditorMode={true} />
         </div>
       </section>
 
@@ -62,7 +62,7 @@ export function EditorForms() {
           <p className="text-sm text-slate-500 mt-1">Add client feedback to build social proof.</p>
         </div>
         <div className="bg-white rounded-lg p-1">
-          <TestimonialStep isEditorMode={true} />
+          <TestimonialManager isEditorMode={true} />
         </div>
       </section>
 

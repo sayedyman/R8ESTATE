@@ -116,17 +116,19 @@ export function CvImportModal({ onClose, onSuccess }: CvImportModalProps) {
       phoneNumber: reviewData.phone || '',
       specialization: reviewData.specialization || '',
       biggestStrength: reviewData.strengths?.join(', ') || '',
-      experience: reviewData.experience ? {
+      experiences: reviewData.experience ? [{
+        id: "exp-1",
         jobTitle: reviewData.experience.jobTitle || '',
         company: reviewData.experience.company || '',
         startDate: reviewData.experience.startDate || '',
         endDate: reviewData.experience.endDate || '',
         description: reviewData.experience.description || ''
-      } : null,
-      achievement: reviewData.achievement ? {
+      }] : [],
+      achievements: reviewData.achievement ? [{
+        id: "ach-1",
         title: reviewData.achievement.title || '',
         description: reviewData.achievement.description || ''
-      } : null,
+      }] : [],
     }
     updateDraft(draftUpdate)
     onSuccess()

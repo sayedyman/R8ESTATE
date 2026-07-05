@@ -55,6 +55,7 @@ export function usePublicTrustCard(requestedSlug: string): {
           description: "Leading the luxury waterfront division, consistently ranking in the top 1% of agents nationwide."
         }],
         testimonials: [],
+        achievements: [],
         verifications: [{
           id: "1",
           type: "Award",

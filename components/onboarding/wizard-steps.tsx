@@ -5,7 +5,8 @@ import { StrengthStep } from "./strength-step"
 import { ProfilePhotoStep } from "./profile-photo-step"
 import { ProfileInformationStep } from "./profile-information-step"
 import { ExperienceStep } from "./experience-step"
-import { TestimonialStep } from "./testimonial-step"
+import { AchievementStep } from "./achievement-step"
+import { PostPreviewStep } from "./post-preview-step"
 
 export { 
   SpecializationStep as WizardStep1,
@@ -13,5 +14,6 @@ export {
   ProfilePhotoStep as WizardStep3,
   ProfileInformationStep as WizardStep4,
   ExperienceStep as WizardStep5,
-  TestimonialStep as WizardStep6
+  AchievementStep as WizardStep6,
+  PostPreviewStep as WizardStep7
 }

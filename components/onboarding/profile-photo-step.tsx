@@ -83,7 +83,7 @@ export function ProfilePhotoStep({ isEditorMode }: { isEditorMode?: boolean } = 
       {!isEditorMode && (
         <WizardNavigation 
           onPrevious={previousStep}
-          nextLabel={draft.profilePhoto ? "Next Step" : "Skip for now"}
+          nextLabel={draft.profilePhoto ? "Next" : "Skip for now"}
         />
       )}
     </form>

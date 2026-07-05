@@ -72,27 +72,27 @@ export function TrustCardPreview() {
           {/* Key Metrics Grid */}
           <div className="grid grid-cols-2 gap-4 text-center border-y border-slate-100 py-5">
             <div>
-              <p className="text-2xl font-black text-slate-900">{draft.trustScore || "98"}</p>
+              <p className="text-2xl font-black text-slate-900">{draft.trustScore || "-"}</p>
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-0.5">Trust Score</p>
             </div>
             <div>
-              <p className="text-2xl font-black text-slate-900">{draft.yearsOfExperience || "5"}</p>
+              <p className="text-2xl font-black text-slate-900">{draft.yearsOfExperience || "-"}</p>
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-0.5">Years Exp.</p>
             </div>
             <div>
-              <p className="text-2xl font-black text-slate-900">120+</p>
+              <p className="text-2xl font-black text-slate-900">{draft.dealsClosed || "-"}</p>
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-0.5">Deals Closed</p>
             </div>
             <div>
-              <p className="text-2xl font-black text-slate-900">4.9/5</p>
+              <p className="text-2xl font-black text-slate-900">{draft.clientRating || "-"}</p>
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-0.5">Client Rating</p>
             </div>
           </div>
 
           {/* Location & Response Time */}
           <div className="text-center space-y-1.5">
-            <p className="text-[13px] text-slate-500 font-medium">Location: <strong className="text-slate-900">Dubai, UAE</strong></p>
-            <p className="text-[13px] text-slate-500 font-medium">Response Time: <strong className="text-slate-900">Within 1 hour</strong></p>
+            <p className="text-[13px] text-slate-500 font-medium">Location: <strong className="text-slate-900">{draft.location || "-"}</strong></p>
+            <p className="text-[13px] text-slate-500 font-medium">Response Time: <strong className="text-slate-900">{draft.responseTime || "-"}</strong></p>
           </div>
 
           {/* Badges / Verification Preview */}

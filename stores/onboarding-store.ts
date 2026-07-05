@@ -20,6 +20,13 @@ export interface Testimonial {
   rating?: number
 }
 
+export interface Achievement {
+  id: string
+  title: string
+  description: string
+  date?: string
+}
+
 export type VerificationType = 'Identity' | 'Certification' | 'License' | 'Award' | 'Membership' | 'Document' | 'Other'
 
 export interface VerificationEntry {
@@ -45,10 +52,15 @@ export interface TrustCardDraft {
   phoneNumber: string
   experiences: Experience[]
   testimonials: Testimonial[]
+  achievements: Achievement[]
   verifications: VerificationEntry[]
   trustScore?: number
   profileCompletion?: number
   verificationStatus?: string
+  dealsClosed?: string
+  clientRating?: string
+  location?: string
+  responseTime?: string
   id?: string
   userId?: string
   slug?: string
@@ -68,6 +80,7 @@ const defaultTrustCardDraft: TrustCardDraft = {
   phoneNumber: '',
   experiences: [],
   testimonials: [],
+  achievements: [],
   verifications: [],
   trustScore: 0,
   profileCompletion: 0,
@@ -98,6 +111,7 @@ export interface OnboardingState {
   updateDraft: (data: Partial<TrustCardDraft>) => void
   nextStep: () => void
   previousStep: () => void
+  skipStep: () => void
   completeOnboarding: () => void
   reset: () => void
   savePreviewToPermanent: () => void
@@ -146,6 +160,19 @@ export const useOnboardingStore = create<OnboardingState>()(
         set((state) => ({ 
           currentStep: Math.max(state.currentStep - 1, 1) 
         })),
+        
+      skipStep: () => 
+        set((state) => {
+          if (state.currentStep === 6) {
+            const expirationDate = new Date();
+            expirationDate.setDate(expirationDate.getDate() + 7);
+            return {
+              isOnboardingCompleted: true,
+              previewExpiresAt: expirationDate.toISOString()
+            };
+          }
+          return { currentStep: Math.min(state.currentStep + 1, 7) };
+        }),
 
       completeOnboarding: () => {
         const expirationDate = new Date();

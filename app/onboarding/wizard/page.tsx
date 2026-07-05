@@ -7,12 +7,13 @@ import { useOnboardingStore } from "@/stores/onboarding-store"
 import { useAuthStore } from "@/stores/auth-store"
 import { ROUTES } from "@/constants/routes"
 import { TrustCardPreview } from "@/components/onboarding/trust-card-preview"
-import { WizardStep1, WizardStep2, WizardStep3, WizardStep4, WizardStep5, WizardStep6 } from "@/components/onboarding/wizard-steps"
+import { WizardStep1, WizardStep2, WizardStep3, WizardStep4, WizardStep5, WizardStep6, WizardStep7 } from "@/components/onboarding/wizard-steps"
 import { useTranslations } from "@/hooks/use-translations"
+import { Button } from "@/components/ui/button"
 
 export default function WizardPage() {
   const router = useRouter()
-  const { currentStep, selectedGoal, isOnboardingCompleted, userMode, trustCardDraft, updateDraft } = useOnboardingStore()
+  const { currentStep, selectedGoal, isOnboardingCompleted, userMode, trustCardDraft, updateDraft, skipStep } = useOnboardingStore()
   const { user } = useAuthStore()
   const t = useTranslations("onboarding.wizard")
 
@@ -32,6 +33,8 @@ export default function WizardPage() {
   }, [user, trustCardDraft, updateDraft])
 
   React.useEffect(() => {
+    if (currentStep === 7) return;
+
     if (isOnboardingCompleted) {
       if (userMode === "preview") {
         router.replace(ROUTES.PROFILE + "?preview=true")
@@ -41,7 +44,7 @@ export default function WizardPage() {
     } else if (!selectedGoal) {
       router.replace(ROUTES.ONBOARDING_GOAL)
     }
-  }, [selectedGoal, isOnboardingCompleted, router])
+  }, [selectedGoal, isOnboardingCompleted, router, currentStep, userMode])
 
   if (isOnboardingCompleted || !selectedGoal) return null
 
@@ -52,6 +55,7 @@ export default function WizardPage() {
     WizardStep4,
     WizardStep5,
     WizardStep6,
+    WizardStep7,
   }
 
   const CurrentStepComponent = steps[`WizardStep${currentStep}` as keyof typeof steps]
@@ -80,17 +84,24 @@ export default function WizardPage() {
       {currentStep < 7 && (
         <div className="mb-8">
           <div className="flex justify-between items-end mb-2">
-            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
-              {currentStep === 1 && t("step1Title")}
-              {currentStep === 2 && t("step2Title")}
-              {currentStep === 3 && t("step3Title")}
-              {currentStep === 4 && t("step4Title")}
-              {currentStep === 5 && t("step5Title")}
-              {currentStep === 6 && t("step6Title")}
-            </h1>
-            <span className="text-sm font-medium text-slate-500 mb-1">
-              {t("stepXof6", { step: currentStep })}
-            </span>
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
+                {currentStep === 1 && t("step1Title")}
+                {currentStep === 2 && t("step2Title")}
+                {currentStep === 3 && t("step3Title")}
+                {currentStep === 4 && t("step4Title")}
+                {currentStep === 5 && t("step5Title")}
+                {currentStep === 6 && t("step6Title")}
+              </h1>
+              <span className="text-sm font-medium text-slate-500 mb-1">
+                {t("stepXof6", { step: currentStep })}
+              </span>
+            </div>
+            {currentStep <= 6 && currentStep !== 3 && (
+              <Button variant="outline" onClick={skipStep} className="text-slate-600 font-semibold hover:bg-slate-100 border-slate-200">
+                Skip
+              </Button>
+            )}
           </div>
           
           <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
@@ -119,6 +130,7 @@ export default function WizardPage() {
               {currentStep === 4 && <WizardStep4 />}
               {currentStep === 5 && <WizardStep5 />}
               {currentStep === 6 && <WizardStep6 />}
+              {currentStep === 7 && <WizardStep7 />}
             </motion.div>
           </AnimatePresence>
         </div>

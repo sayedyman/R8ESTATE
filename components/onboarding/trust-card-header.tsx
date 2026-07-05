@@ -41,12 +41,11 @@ export function TrustCardHeader({ fullName, jobTitle, company, isInlineEditing, 
         </>
       ) : (
         <>
-          <h2 className="text-xl font-bold text-slate-900 leading-tight flex items-center justify-center gap-1.5">
-            {fullName || "Your Name"}
-            {/* Verification badge space if needed in the future */}
+          <h2 className="text-xl font-bold text-slate-900 leading-tight flex items-center justify-center gap-1.5 min-h-[28px]">
+            {fullName || ""}
           </h2>
-          <p className="text-sm font-medium text-slate-600 mt-0.5">
-            {jobTitle || "Job Title"} 
+          <p className="text-sm font-medium text-slate-600 mt-0.5 min-h-[20px]">
+            {jobTitle || ""} 
             {company && <span className="text-slate-400 font-normal"> at {company}</span>}
           </p>
         </>
