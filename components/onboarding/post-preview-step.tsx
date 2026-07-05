@@ -12,7 +12,6 @@ export function PostPreviewStep() {
   const { completeOnboarding } = useOnboardingStore()
 
   const handleCreateAccount = () => {
-    completeOnboarding()
     router.push(ROUTES.SIGNUP)
   }
 

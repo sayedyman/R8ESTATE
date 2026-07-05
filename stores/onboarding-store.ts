@@ -180,7 +180,6 @@ export const useOnboardingStore = create<OnboardingState>()(
         
         set({ 
           isOnboardingCompleted: true,
-          currentStep: 1,     // Reset step
           previewExpiresAt: expirationDate.toISOString()
           // preserve trustCardDraft, userMode, and selectedGoal
         });
