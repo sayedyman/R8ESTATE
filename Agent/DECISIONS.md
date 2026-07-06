@@ -63,3 +63,16 @@
 
 ## Trust Card Editor Redesign
 - **Isolated Editor Module**: Created a dedicated `components/dashboard/trust-card-editor/` directory to house the Trust Card Editor logic, keeping the main dashboard clean and preserving the Single Responsibility Principle for editing functionality.
+
+## Settings & Verification
+- **Dynamic Verification Schemas**: Implemented dynamic forms for different Verification types (Identity, Certification, License, Award). To avoid creating massive bloated union types or multiple tables, all type-specific fields are stored within a flexible `metadata: Record<string, string>` JSON object on the `VerificationEntry` model. This ensures scalability without interface churn.
+- **Dirty State Settings**: The Settings MVP implements rigorous dirty-state tracking across all form inputs and toggles, keeping the "Save Changes" button disabled until actual changes occur, providing immediate user feedback and following standard UX best practices.
+
+## Onboarding Data Strategy vs Dashboard
+- **Single-Item Onboarding vs Multi-Entry Dashboard**: To maximize onboarding completion rates, steps like Experience and Achievements are strictly limited to single-item forms during the wizard. However, they are mapped to array-based state structures (`experiences[]`, `achievements[]` at index `0`) to remain perfectly compatible with the dashboard's multi-entry capability where users manage full lists.
+- **Intercepted Completion Flow**: The post-preview state intercepts standard onboarding completion with an explicit decision screen. To solve race conditions between preview redirects and signup, the "Complete Profile" flow completely bypasses `completeOnboarding()` store updates, navigating directly to `/signup`, allowing the signup-success callback to handle the final conversion of the user's `trustCardDraft` to permanent status.
+
+## MVP Stabilization & Linting Strategy
+- **Zero Tolerance Linting**: Enforced a strict 0 errors and 0 warnings linting threshold prior to MVP launch to completely eliminate baseline technical debt.
+- **Hydration Mismatch Mitigation**: Safely bypassed the `react-hooks/set-state-in-effect` rule selectively for `setMounted(true)` within empty-dependency `useEffect` hooks, acknowledging this as an established and intended pattern to prevent Next.js hydration mismatches.
+- **Third-Party Type Conflicts**: Mitigated strict type conflicts stemming from external UI component libraries (e.g., Radix UI's `BaseUIEvent` overriding standard React events) using strict `React.MouseEvent` combined with isolated `@ts-expect-error` overrides. This keeps internal types pure while safely maintaining external library integration.

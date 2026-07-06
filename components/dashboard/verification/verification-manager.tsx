@@ -45,7 +45,7 @@ export function VerificationManager() {
     updateDraft({ verifications: verifications.filter(v => v.id !== id) });
   };
 
-  const updateMetadata = (key: string, value: any) => {
+  const updateMetadata = (key: string, value: unknown) => {
     setNewEntry(prev => ({
       ...prev,
       metadata: { ...(prev.metadata || {}), [key]: value }
@@ -73,7 +73,7 @@ export function VerificationManager() {
             <div className="space-y-2">
               <Label>Issuing Organization</Label>
               <Input 
-                value={newEntry.metadata?.organization || ''}
+                value={(newEntry.metadata as Record<string, string>)?.organization || ''}
                 onChange={(e) => updateMetadata('organization', e.target.value)}
                 placeholder="e.g. National Association of Realtors"
               />
@@ -83,7 +83,7 @@ export function VerificationManager() {
                 <Label>Issue Date</Label>
                 <Input 
                   type="month"
-                  value={newEntry.metadata?.issueDate || ''}
+                  value={(newEntry.metadata as Record<string, string>)?.issueDate || ''}
                   onChange={(e) => updateMetadata('issueDate', e.target.value)}
                 />
               </div>
@@ -91,7 +91,7 @@ export function VerificationManager() {
                 <Label>Expiration Date (Optional)</Label>
                 <Input 
                   type="month"
-                  value={newEntry.metadata?.expirationDate || ''}
+                  value={(newEntry.metadata as Record<string, string>)?.expirationDate || ''}
                   onChange={(e) => updateMetadata('expirationDate', e.target.value)}
                 />
               </div>
@@ -100,7 +100,7 @@ export function VerificationManager() {
               <div className="space-y-2">
                 <Label>Credential ID</Label>
                 <Input 
-                  value={newEntry.metadata?.credentialId || ''}
+                  value={(newEntry.metadata as Record<string, string>)?.credentialId || ''}
                   onChange={(e) => updateMetadata('credentialId', e.target.value)}
                   placeholder="Optional"
                 />
@@ -108,7 +108,7 @@ export function VerificationManager() {
               <div className="space-y-2">
                 <Label>Credential URL</Label>
                 <Input 
-                  value={newEntry.metadata?.credentialUrl || ''}
+                  value={(newEntry.metadata as Record<string, string>)?.credentialUrl || ''}
                   onChange={(e) => updateMetadata('credentialUrl', e.target.value)}
                   placeholder="https://"
                 />
@@ -131,7 +131,7 @@ export function VerificationManager() {
             <div className="space-y-2">
               <Label>Country of Issuance</Label>
               <Input 
-                value={newEntry.metadata?.country || ''}
+                value={(newEntry.metadata as Record<string, string>)?.country || ''}
                 onChange={(e) => updateMetadata('country', e.target.value)}
                 placeholder="e.g. United States"
               />
@@ -141,19 +141,19 @@ export function VerificationManager() {
                 <Label>Government ID Type</Label>
                 <select 
                   className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                  value={newEntry.metadata?.idType || ''}
+                  value={(newEntry.metadata as Record<string, string>)?.idType || ''}
                   onChange={(e) => updateMetadata('idType', e.target.value)}
                 >
                   <option value="" disabled>Select Type</option>
                   <option value="Passport">Passport</option>
-                  <option value="Driver License">Driver's License</option>
+                  <option value="Driver License">Driver&apos;s License</option>
                   <option value="National ID">National ID Card</option>
                 </select>
               </div>
               <div className="space-y-2">
                 <Label>Government ID Number</Label>
                 <Input 
-                  value={newEntry.metadata?.idNumber || ''}
+                  value={(newEntry.metadata as Record<string, string>)?.idNumber || ''}
                   onChange={(e) => updateMetadata('idNumber', e.target.value)}
                   placeholder="Optional for MVP"
                 />
@@ -177,14 +177,14 @@ export function VerificationManager() {
               <div className="space-y-2">
                 <Label>License Number</Label>
                 <Input 
-                  value={newEntry.metadata?.licenseNumber || ''}
+                  value={(newEntry.metadata as Record<string, string>)?.licenseNumber || ''}
                   onChange={(e) => updateMetadata('licenseNumber', e.target.value)}
                 />
               </div>
               <div className="space-y-2">
                 <Label>Issuing Authority</Label>
                 <Input 
-                  value={newEntry.metadata?.issuingAuthority || ''}
+                  value={(newEntry.metadata as Record<string, string>)?.issuingAuthority || ''}
                   onChange={(e) => updateMetadata('issuingAuthority', e.target.value)}
                   placeholder="e.g. Dept of Real Estate"
                 />
@@ -195,7 +195,7 @@ export function VerificationManager() {
                 <Label>Issue Date</Label>
                 <Input 
                   type="month"
-                  value={newEntry.metadata?.issueDate || ''}
+                  value={(newEntry.metadata as Record<string, string>)?.issueDate || ''}
                   onChange={(e) => updateMetadata('issueDate', e.target.value)}
                 />
               </div>
@@ -203,7 +203,7 @@ export function VerificationManager() {
                 <Label>Expiration Date</Label>
                 <Input 
                   type="month"
-                  value={newEntry.metadata?.expirationDate || ''}
+                  value={(newEntry.metadata as Record<string, string>)?.expirationDate || ''}
                   onChange={(e) => updateMetadata('expirationDate', e.target.value)}
                 />
               </div>
@@ -226,7 +226,7 @@ export function VerificationManager() {
               <div className="space-y-2">
                 <Label>Organization</Label>
                 <Input 
-                  value={newEntry.metadata?.organization || ''}
+                  value={(newEntry.metadata as Record<string, string>)?.organization || ''}
                   onChange={(e) => updateMetadata('organization', e.target.value)}
                 />
               </div>
@@ -234,7 +234,7 @@ export function VerificationManager() {
                 <Label>Date</Label>
                 <Input 
                   type="date"
-                  value={newEntry.metadata?.date || ''}
+                  value={(newEntry.metadata as Record<string, string>)?.date || ''}
                   onChange={(e) => updateMetadata('date', e.target.value)}
                 />
               </div>

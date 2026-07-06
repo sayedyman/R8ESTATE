@@ -53,10 +53,7 @@ export function GoalSummary({
   const getProfileUrl = () => {
     const { savedTrustCard, trustCardDraft, userMode } = useOnboardingStore.getState()
     const card = userMode === "registered" && savedTrustCard ? savedTrustCard : trustCardDraft
-    // Use the stored permanent slug; fall back to generating from fullName for guest previews only
-    const slug = card?.slug || (card?.fullName
-      ? card.fullName.toLowerCase().trim().replace(/[^\w\s-]/g, "").replace(/[\s_-]+/g, "-").replace(/^-+|-+$/g, "")
-      : "profile")
+    const slug = card?.slug || "user"
     return typeof window !== "undefined" ? `${window.location.origin}/u/${slug}` : `/u/${slug}`
   }
 

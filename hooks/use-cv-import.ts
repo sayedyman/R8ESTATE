@@ -18,6 +18,7 @@ export function useCVImport(): UseCVImportReturn {
   const isLoading = step === 'processing'
 
   const uploadAndExtract = async (file: File) => {
+    console.log("Extracting", file.name);
     setStep('processing')
     setError(null)
 

@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
-import { useTranslations } from "@/hooks/use-translations"
+
 import { Plus, Trash2, ArrowUp, ArrowDown, ChevronDown, ChevronUp } from "lucide-react"
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -19,10 +19,9 @@ const parseDate = (dateStr: string) => {
   return { month: parts[0] || "", year: parts[1] || "" };
 };
 
-export function ExperienceManager({ isEditorMode }: { isEditorMode?: boolean } = {}) {
+export function ExperienceManager() {
   const { trustCardDraft, savedTrustCard, userMode, updateDraft } = useOnboardingStore()
   const draft = userMode === "registered" && savedTrustCard ? savedTrustCard : trustCardDraft;
-  const t = useTranslations("onboarding.wizard")
 
   const experiences = draft.experiences || [];
 

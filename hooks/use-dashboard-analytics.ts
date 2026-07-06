@@ -1,4 +1,3 @@
-import { InsightCard, Recommendation } from '@/types/dashboard'
 
 export function useDashboardAnalytics() {
   return {

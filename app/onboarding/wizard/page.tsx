@@ -33,7 +33,7 @@ export default function WizardPage() {
   }, [user, trustCardDraft, updateDraft])
 
   React.useEffect(() => {
-    if (currentStep === 7) return;
+    if (currentStep === 8) return;
 
     if (isOnboardingCompleted) {
       if (userMode === "preview") {
@@ -66,39 +66,39 @@ export default function WizardPage() {
   }
 
   return (
-    <div className="w-full max-w-5xl mx-auto flex flex-col lg:flex-row gap-8 lg:gap-16 items-start justify-center h-full">
+    <div className="w-full max-w-[1200px] mx-auto flex flex-col lg:flex-row gap-6 lg:gap-12 items-start lg:items-center justify-center h-full py-4 lg:py-8">
       
-      {/* Left side: Live Preview (Sticky on desktop) */}
-      <div className="w-full lg:w-1/2 flex justify-center lg:sticky lg:top-32 order-2 lg:order-1">
-        <div className="w-full max-w-md">
-          <div className="mb-4 text-center lg:text-start">
-            <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-500 mb-1">{t("livePreviewTitle")}</h2>
-            <p className="text-xs text-slate-400">{t("updatesAsYouType")}</p>
+      {/* Left side: Live Preview */}
+      <div className="w-full lg:flex-1 lg:flex lg:flex-col lg:justify-center order-2 lg:order-1 lg:h-full lg:max-h-[85vh]">
+        <div className="w-full lg:scale-[0.95] xl:scale-[0.95] origin-center">
+          <div className="mb-3 lg:mb-4 text-center lg:text-start">
+            <h2 className="text-xs lg:text-sm font-semibold uppercase tracking-wider text-slate-500 mb-0.5">{t("livePreviewTitle")}</h2>
+            <p className="text-[10px] lg:text-xs text-slate-400">{t("updatesAsYouType")}</p>
           </div>
           <TrustCardPreview />
         </div>
       </div>
 
       {/* Right side: Wizard Form */}
-      <div className="w-full lg:w-1/2 flex flex-col order-1 lg:order-2">
+      <div className="w-full lg:w-[440px] shrink-0 flex flex-col order-1 lg:order-2 lg:justify-center lg:h-full lg:max-h-[85vh]">
       {currentStep < 7 && (
-        <div className="mb-8">
+        <div className="mb-3 lg:mb-4">
           <div className="flex justify-between items-end mb-2">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
+              <h1 className="text-xl sm:text-2xl font-bold text-slate-900">
                 {currentStep === 1 && t("step1Title")}
                 {currentStep === 2 && t("step2Title")}
                 {currentStep === 3 && t("step3Title")}
-                {currentStep === 4 && t("step4Title")}
+                {currentStep === 4 && t("cvImportTitle", { defaultValue: "Import from CV" })}
                 {currentStep === 5 && t("step5Title")}
                 {currentStep === 6 && t("step6Title")}
               </h1>
-              <span className="text-sm font-medium text-slate-500 mb-1">
-                {t("stepXof6", { step: currentStep })}
+              <span className="text-xs sm:text-sm font-medium text-slate-500 mb-1">
+                {t("stepXof6", { step: currentStep, defaultValue: `Step ${currentStep} of 6` })}
               </span>
             </div>
             {currentStep <= 6 && currentStep !== 3 && (
-              <Button variant="outline" onClick={skipStep} className="text-slate-600 font-semibold hover:bg-slate-100 border-slate-200">
+              <Button variant="outline" size="sm" onClick={skipStep} className="text-slate-600 font-semibold hover:bg-slate-100 border-slate-200">
                 Skip
               </Button>
             )}
@@ -115,7 +115,7 @@ export default function WizardPage() {
         </div>
       )}
 
-        <div className="bg-white p-6 sm:p-8 rounded-2xl border border-slate-100 shadow-xl shadow-slate-200/40">
+        <div className="bg-white p-5 sm:p-6 lg:p-6 rounded-2xl border border-slate-100 shadow-xl shadow-slate-200/40 lg:max-h-full lg:overflow-y-auto">
           <AnimatePresence mode="wait">
             <motion.div
               key={currentStep}

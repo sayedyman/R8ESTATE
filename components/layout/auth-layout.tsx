@@ -3,7 +3,7 @@
 import * as React from "react"
 import Link from "next/link"
 import { motion } from "framer-motion"
-import { Shield, BarChart3, Star, CheckCircle2, QrCode } from "lucide-react"
+import { Shield, BarChart3, Star, CheckCircle2 } from "lucide-react"
 import { VerificationBadge } from "@/components/ui/verification-badge"
 import { Progress } from "@/components/ui/progress"
 import { ROUTES } from "@/constants/routes"

@@ -129,9 +129,7 @@ export function SmartRecommendations({ recommendations, goalTitle, goalProgress,
   if (!displayRecommendations || displayRecommendations.length === 0) return null
 
   const getProfileUrl = () => {
-    const slug = trustCardDraft?.fullName 
-      ? trustCardDraft.fullName.toLowerCase().trim().replace(/[^\w\s-]/g, "").replace(/[\s_-]+/g, "-").replace(/^-+|-+$/g, "") 
-      : "profile"
+    const slug = trustCardDraft?.slug || "user"
     return typeof window !== "undefined" ? `${window.location.origin}/u/${slug}` : `/u/${slug}`
   }
 

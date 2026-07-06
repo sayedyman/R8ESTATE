@@ -1,5 +1,5 @@
 import { GoalConfig } from "@/types/dashboard"
-import { Eye, Users, Share2, Heart } from "lucide-react"
+import { Heart } from "lucide-react"
 
 export const moreReferralsConfig: GoalConfig = {
   id: "More Referrals",

@@ -1,5 +1,5 @@
 import { GoalConfig } from "@/types/dashboard"
-import { Eye, Shield, Users, Award, FileText } from "lucide-react"
+import { Award } from "lucide-react"
 
 export const moreAuthorityConfig: GoalConfig = {
   id: "More Authority",

@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client"
 
 import * as React from "react"
@@ -11,9 +12,7 @@ export function DashboardTrustCardPreview() {
   const draft = baseCard || {}
 
   // Safe cast for mock fields that might not be in the strict schema yet
-  const closedDeals = (draft as any).closedDeals
-  const salesVolume = (draft as any).salesVolume
-  const market = (draft as any).mainMarket
+  const closedDeals = (draft as unknown as Record<string, unknown>).closedDeals
 
   return (
     <Card className="w-full bg-white border border-slate-200 shadow-sm overflow-hidden flex flex-row items-center p-3 md:p-4 gap-4 relative transition-all duration-300">

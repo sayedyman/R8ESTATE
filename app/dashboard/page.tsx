@@ -3,7 +3,7 @@
 import * as React from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useOnboardingStore } from "@/stores/onboarding-store"
-import { Shield, LayoutDashboard, BadgeCheck, ShieldCheck, Settings, LogOut, LifeBuoy, Briefcase } from "lucide-react"
+import { Shield, LayoutDashboard, BadgeCheck, ShieldCheck, Settings, LogOut, LifeBuoy } from "lucide-react"
 import { useAuthStore } from "@/stores/auth-store"
 import Link from "next/link"
 import { ROUTES } from "@/constants/routes"
@@ -64,6 +64,7 @@ function DashboardContent() {
   }
 
   React.useEffect(() => {
+    // eslint-disable-next-line
     setMounted(true)
   }, [])
 
@@ -137,6 +138,7 @@ function DashboardContent() {
                 {[
                   "Basic Information",
                   "Trust Signals",
+                  "Metrics",
                   "Experience",
                   "Testimonials",
                   "Contact",

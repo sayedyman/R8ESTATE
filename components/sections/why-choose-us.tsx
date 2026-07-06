@@ -5,7 +5,7 @@ import { Container } from "@/components/ui/container"
 import { SectionTitle } from "@/components/ui/section-title"
 import { IconCard } from "@/components/ui/icon-card"
 import { motion } from "framer-motion"
-import { ShieldCheck, UserCheck, Share, Sparkles, Building2, Smartphone, TrendingUp } from "lucide-react"
+import { ShieldCheck, Share, Sparkles } from "lucide-react"
 import { useTranslations } from "@/hooks/use-translations"
 
 const reasons = [

@@ -1,15 +1,14 @@
 "use client"
 import * as React from "react"
 import Link from "next/link"
-import Image from "next/image"
-import { Button, buttonVariants } from "@/components/ui/button"
+import { buttonVariants } from "@/components/ui/button"
 import { Container } from "@/components/ui/container"
 import { useTranslations } from "@/hooks/use-translations"
 
 import { ROUTES } from "@/constants/routes"
 export function Navbar() {
   const t = useTranslations("nav")
-  const [logoError, setLogoError] = React.useState(false)
+
   const [isVisible, setIsVisible] = React.useState(true)
   const lastScrollY = React.useRef(0)
 

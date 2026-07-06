@@ -21,7 +21,7 @@ export function RecentActivity({ activities, hasNoAnalytics = false }: RecentAct
           <div className="text-center space-y-2">
             <h3 className="text-sm font-semibold text-slate-700">No activity yet</h3>
             <p className="text-xs text-slate-500 max-w-[220px] leading-relaxed mx-auto">
-              When people start interacting with your Trust Card, you'll see it here.
+              When people start interacting with your Trust Card, you&apos;ll see it here.
             </p>
           </div>
         </CardContent>

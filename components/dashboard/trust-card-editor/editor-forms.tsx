@@ -7,6 +7,7 @@ import { SpecializationStep } from "@/components/onboarding/specialization-step"
 import { StrengthStep } from "@/components/onboarding/strength-step"
 import { ExperienceManager } from "@/components/dashboard/trust-card-editor/experience-manager"
 import { TestimonialManager } from "@/components/dashboard/trust-card-editor/testimonial-manager"
+import { TrustMetricsManager } from "@/components/dashboard/trust-card-editor/trust-metrics-manager"
 
 export function EditorForms() {
   return (
@@ -44,6 +45,17 @@ export function EditorForms() {
         </div>
       </section>
 
+      {/* Metrics Section */}
+      <section id="Metrics" data-editor-section="true" className="scroll-mt-8 mt-16">
+        <div className="mb-6 border-b border-slate-100 pb-4">
+          <h3 className="text-lg font-semibold text-slate-900">Metrics</h3>
+          <p className="text-sm text-slate-500 mt-1">Manage the metrics displayed on your Trust Card.</p>
+        </div>
+        <div className="bg-white rounded-lg p-1 border border-slate-100 shadow-sm">
+          <TrustMetricsManager />
+        </div>
+      </section>
+
       {/* Experience Section */}
       <section id="Experience" data-editor-section="true" className="scroll-mt-8 mt-16">
         <div className="mb-6 border-b border-slate-100 pb-4">
@@ -51,7 +63,7 @@ export function EditorForms() {
           <p className="text-sm text-slate-500 mt-1">Manage your work history to show your track record.</p>
         </div>
         <div className="bg-white rounded-lg p-1">
-          <ExperienceManager isEditorMode={true} />
+          <ExperienceManager />
         </div>
       </section>
 
@@ -62,7 +74,7 @@ export function EditorForms() {
           <p className="text-sm text-slate-500 mt-1">Add client feedback to build social proof.</p>
         </div>
         <div className="bg-white rounded-lg p-1">
-          <TestimonialManager isEditorMode={true} />
+          <TestimonialManager />
         </div>
       </section>
 

@@ -28,7 +28,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { AlertCircle, Check, Circle } from "lucide-react"
+import { AlertCircle } from "lucide-react"
 
 export function SignupForm() {
   const router = useRouter()
@@ -50,6 +50,7 @@ export function SignupForm() {
     },
   })
 
+  // eslint-disable-next-line
   const password = form.watch("password") || ""
 
   async function onSubmit(data: SignupFormData) {
@@ -67,7 +68,7 @@ export function SignupForm() {
       
       router.push(callbackUrl || ROUTES.DASHBOARD)
       router.refresh()
-    } catch (err) {
+    } catch {
       setError("An unexpected error occurred.")
     }
   }

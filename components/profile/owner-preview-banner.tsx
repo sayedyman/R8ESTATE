@@ -1,18 +1,21 @@
 "use client"
 
 import * as React from "react"
-import { useRouter } from "next/navigation"
-import { ROUTES } from "@/constants/routes"
 import { Button } from "@/components/ui/button"
-import { Edit, Share2, Link as LinkIcon, Info, X, CheckCircle2 } from "lucide-react"
+import { Edit, Share2, X, CheckCircle2, Download, Image as ImageIcon, FileText, ChevronDown } from "lucide-react"
 import { useOnboardingStore } from "@/stores/onboarding-store"
 import { ShareModal } from "./share-modal"
-import { useAuthStore } from "@/stores/auth-store"
 import { useTranslations } from "@/hooks/use-translations"
+import { toPng } from 'html-to-image'
+import { jsPDF } from 'jspdf'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 export function OwnerPreviewBanner() {
-  const router = useRouter()
-  const { user } = useAuthStore()
   const t = useTranslations("profile")
   const { isInlineEditing, tempDraft, setInlineEditing, setTempDraft, updateDraft, trustCardDraft, savedTrustCard, userMode } = useOnboardingStore()
   const [toastMessage, setToastMessage] = React.useState("")
@@ -53,9 +56,49 @@ export function OwnerPreviewBanner() {
     setIsShareOpen(true)
   }
 
-  const handleCopyLink = () => {
-    navigator.clipboard.writeText(getUrl())
-    showToast(t("ownerBanner.copySuccess"))
+  const handleDownloadPNG = async () => {
+    const cardElement = document.getElementById("trust-card-preview")
+    if (!cardElement) {
+      showToast("Could not find Trust Card to export.")
+      return
+    }
+    try {
+      const dataUrl = await toPng(cardElement, { quality: 1, pixelRatio: 2 })
+      const link = document.createElement('a')
+      const name = trustCardDraft?.fullName?.replace(/\s+/g, '-') || 'trust-card'
+      link.download = `${name}-preview.png`
+      link.href = dataUrl
+      link.click()
+      showToast("Downloaded as PNG")
+    } catch (err) {
+      console.error(err)
+      showToast("Failed to download PNG")
+    }
+  }
+
+  const handleDownloadPDF = async () => {
+    const cardElement = document.getElementById("trust-card-preview")
+    if (!cardElement) {
+      showToast("Could not find Trust Card to export.")
+      return
+    }
+    try {
+      const dataUrl = await toPng(cardElement, { quality: 1, pixelRatio: 2 })
+      const width = cardElement.offsetWidth
+      const height = cardElement.offsetHeight
+      const pdf = new jsPDF({
+        orientation: width > height ? "landscape" : "portrait",
+        unit: "px",
+        format: [width, height]
+      })
+      pdf.addImage(dataUrl, 'PNG', 0, 0, width, height)
+      const name = trustCardDraft?.fullName?.replace(/\s+/g, '-') || 'trust-card'
+      pdf.save(`${name}-preview.pdf`)
+      showToast("Downloaded as PDF")
+    } catch (err) {
+      console.error(err)
+      showToast("Failed to download PDF")
+    }
   }
 
   return (
@@ -95,6 +138,30 @@ export function OwnerPreviewBanner() {
                 <Share2 className="h-4 w-4 mr-1.5 rtl:ml-1.5 rtl:mr-0" />
                 {t("ownerBanner.shareLink")}
               </Button>
+              
+              <DropdownMenu>
+                <DropdownMenuTrigger render={
+                  <Button 
+                    size="sm" 
+                    variant="default"
+                    className="h-9 bg-slate-800 hover:bg-slate-700"
+                  >
+                    <Download className="h-4 w-4 mr-1.5 rtl:ml-1.5 rtl:mr-0" />
+                    Download
+                    <ChevronDown className="h-3 w-3 ml-1.5 opacity-70" />
+                  </Button>
+                } />
+                <DropdownMenuContent align="end" className="w-56 bg-white border-slate-200 shadow-lg rounded-xl">
+                  <DropdownMenuItem onClick={handleDownloadPNG} className="cursor-pointer gap-2 py-2.5 px-3">
+                    <ImageIcon className="h-4 w-4 text-slate-500" />
+                    <span className="font-medium text-slate-700">Download as Image (.PNG)</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleDownloadPDF} className="cursor-pointer gap-2 py-2.5 px-3">
+                    <FileText className="h-4 w-4 text-slate-500" />
+                    <span className="font-medium text-slate-700">Download as PDF</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </>
           ) : (
             <>

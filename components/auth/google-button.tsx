@@ -11,8 +11,9 @@ export const GoogleButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, children = "Continue with Google", onClick, ...props }, ref) => {
     const router = useRouter()
     
-    const handleGoogleSignIn = async (e: any) => {
+    const handleGoogleSignIn = async (e: React.MouseEvent<HTMLButtonElement>) => {
       if (onClick) {
+        // @ts-expect-error - Mismatch between React.MouseEvent and BaseUIEvent
         onClick(e)
       }
       if (e.defaultPrevented) return

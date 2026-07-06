@@ -15,6 +15,7 @@ import { useTranslations } from "@/hooks/use-translations"
 interface CvImportModalProps {
   onClose: () => void
   onSuccess: () => void
+  initialFile?: File
 }
 
 /**
@@ -26,8 +27,8 @@ interface CvImportModalProps {
  *   review     → editable form pre-filled with extracted fields
  *   error      → friendly error with manual fallback
  */
-export function CvImportModal({ onClose, onSuccess }: CvImportModalProps) {
-  const { step, error, extractedData, isLoading, uploadAndExtract, reset } = useCVImport()
+export function CvImportModal({ onClose, onSuccess, initialFile }: CvImportModalProps) {
+  const { step, error, extractedData, uploadAndExtract, reset } = useCVImport()
   const { updateDraft } = useOnboardingStore()
   const t = useTranslations("onboarding")
 
@@ -39,9 +40,17 @@ export function CvImportModal({ onClose, onSuccess }: CvImportModalProps) {
   // Sync extractedData into local reviewData for editing
   React.useEffect(() => {
     if (extractedData) {
+      // eslint-disable-next-line
       setReviewData({ ...extractedData })
     }
   }, [extractedData])
+
+  // Automatically start upload if initialFile is provided
+  React.useEffect(() => {
+    if (initialFile && step === 'upload') {
+      uploadAndExtract(initialFile)
+    }
+  }, [initialFile, step, uploadAndExtract])
 
   const validateAndUpload = (file: File) => {
     setFileError(null)
@@ -68,40 +77,11 @@ export function CvImportModal({ onClose, onSuccess }: CvImportModalProps) {
     if (file) validateAndUpload(file)
   }
 
-  const updateReviewField = (field: keyof ExtractedCVData, value: any) => {
-    setReviewData(prev => prev ? { ...prev, [field]: value } : prev)
+  const updateReviewField = (field: keyof ExtractedCVData, value: unknown) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    setReviewData(prev => prev ? { ...prev, [field]: value as any } : prev)
   }
 
-  const updateReviewExperience = (field: keyof NonNullable<ExtractedCVData['experience']>, value: string) => {
-    setReviewData(prev => {
-      if (!prev) return prev
-      return {
-        ...prev,
-        experience: {
-          jobTitle: prev.experience?.jobTitle || '',
-          company: prev.experience?.company || '',
-          startDate: prev.experience?.startDate || '',
-          endDate: prev.experience?.endDate || '',
-          description: prev.experience?.description || '',
-          [field]: value
-        }
-      }
-    })
-  }
-
-  const updateReviewAchievement = (field: keyof NonNullable<ExtractedCVData['achievement']>, value: string) => {
-    setReviewData(prev => {
-      if (!prev) return prev
-      return {
-        ...prev,
-        achievement: {
-          title: prev.achievement?.title || '',
-          description: prev.achievement?.description || '',
-          [field]: value
-        }
-      }
-    })
-  }
 
   const handleConfirm = () => {
     if (!reviewData) return
@@ -374,77 +354,6 @@ export function CvImportModal({ onClose, onSuccess }: CvImportModalProps) {
                     onChange={(v) => updateReviewField("strengths", v ? v.split(",").map(s => s.trim()) : [])}
                     placeholder={t("wizard.strengthDesc")}
                   />
-
-                  {/* Experience */}
-                  <div className="space-y-4 pt-2 border-t border-slate-100">
-                    <h4 className="text-sm font-bold text-slate-800">{t("wizard.experience")}</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <ReviewField
-                        label={t("wizard.jobTitle")}
-                        id="cv-exp-title"
-                        value={reviewData.experience?.jobTitle || ""}
-                        onChange={(v) => updateReviewExperience("jobTitle", v)}
-                        placeholder={t("wizard.jobTitle")}
-                      />
-                      <ReviewField
-                        label={t("wizard.company")}
-                        id="cv-exp-company"
-                        value={reviewData.experience?.company || ""}
-                        onChange={(v) => updateReviewExperience("company", v)}
-                        placeholder={t("wizard.company")}
-                      />
-                      <ReviewField
-                        label={t("wizard.startDate")}
-                        id="cv-exp-start"
-                        value={reviewData.experience?.startDate || ""}
-                        onChange={(v) => updateReviewExperience("startDate", v)}
-                        placeholder="MM/YYYY"
-                      />
-                      <ReviewField
-                        label={t("wizard.endDate")}
-                        id="cv-exp-end"
-                        value={reviewData.experience?.endDate || ""}
-                        onChange={(v) => updateReviewExperience("endDate", v)}
-                        placeholder="MM/YYYY or Present"
-                      />
-                    </div>
-                    <div className="space-y-1.5">
-                      <Label htmlFor="cv-exp-desc" className="text-xs font-semibold text-slate-600 uppercase tracking-wider">
-                        {t("wizard.shortDescription")}
-                      </Label>
-                      <Textarea
-                        id="cv-exp-desc"
-                        value={reviewData.experience?.description || ""}
-                        onChange={(e) => updateReviewExperience("description", e.target.value)}
-                        placeholder={t("wizard.shortDescription")}
-                        className="h-20 resize-none text-sm"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Achievement */}
-                  <div className="space-y-4 pt-2 border-t border-slate-100">
-                    <h4 className="text-sm font-bold text-slate-800">{t("wizard.achievement")}</h4>
-                    <ReviewField
-                      label={t("wizard.achievementTitle")}
-                      id="cv-ach-title"
-                      value={reviewData.achievement?.title || ""}
-                      onChange={(v) => updateReviewAchievement("title", v)}
-                      placeholder={t("wizard.achievementTitle")}
-                    />
-                    <div className="space-y-1.5">
-                      <Label htmlFor="cv-ach-desc" className="text-xs font-semibold text-slate-600 uppercase tracking-wider">
-                        {t("wizard.shortDescription")}
-                      </Label>
-                      <Textarea
-                        id="cv-ach-desc"
-                        value={reviewData.achievement?.description || ""}
-                        onChange={(e) => updateReviewAchievement("description", e.target.value)}
-                        placeholder={t("wizard.shortDescription")}
-                        className="h-20 resize-none text-sm"
-                      />
-                    </div>
-                  </div>
 
                   {/* Contact */}
                   <div className="grid grid-cols-1 gap-4">

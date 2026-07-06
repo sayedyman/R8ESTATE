@@ -4,7 +4,7 @@ import * as React from "react"
 import { useRouter } from "next/navigation"
 import { ROUTES } from "@/constants/routes"
 import { Button } from "@/components/ui/button"
-import { Clock, Info } from "lucide-react"
+import { Info } from "lucide-react"
 import { useOnboardingStore } from "@/stores/onboarding-store"
 
 export function PreviewInfoCard() {
@@ -43,7 +43,7 @@ export function PreviewInfoCard() {
         <div className="bg-white p-3 rounded-2xl shadow-sm border border-slate-100 mb-4">
           <Info className="h-6 w-6 text-primary" />
         </div>
-        <h3 className="font-extrabold text-slate-900 text-xl tracking-tight">You're currently using Preview Mode</h3>
+        <h3 className="font-extrabold text-slate-900 text-xl tracking-tight">You&apos;re currently using Preview Mode</h3>
         <p className="text-slate-600 text-sm mt-2.5 leading-relaxed max-w-sm mx-auto">
           This Trust Card is temporary and will expire in 7 days. Create a free account to save it permanently and unlock all future features.
         </p>

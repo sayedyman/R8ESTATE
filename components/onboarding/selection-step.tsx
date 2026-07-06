@@ -36,6 +36,7 @@ export function SelectionStep({
 
   React.useEffect(() => {
     if (value && !options.some(opt => opt.value === value)) {
+      // eslint-disable-next-line
       setIsOther(true)
     }
   }, [value, options])

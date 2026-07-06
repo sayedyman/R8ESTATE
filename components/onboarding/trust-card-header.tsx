@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { Input } from "@/components/ui/input"
-import { CheckCircle2 } from "lucide-react"
+
 
 interface TrustCardHeaderProps {
   fullName?: string

@@ -35,7 +35,7 @@ export interface VerificationEntry {
   title: string
   description?: string
   status: 'Pending' | 'Verified' | 'Rejected'
-  metadata?: Record<string, any>
+  metadata?: Record<string, unknown>
 }
 
 export interface TrustCardDraft {
@@ -61,6 +61,8 @@ export interface TrustCardDraft {
   clientRating?: string
   location?: string
   responseTime?: string
+  trustedByCount?: string
+  showR8Badge?: boolean
   id?: string
   userId?: string
   slug?: string
@@ -85,9 +87,11 @@ const defaultTrustCardDraft: TrustCardDraft = {
   trustScore: 0,
   profileCompletion: 0,
   verificationStatus: 'Pending',
+  trustedByCount: '',
+  showR8Badge: true,
   id: undefined,
   userId: undefined,
-  slug: undefined,
+  slug: 'user',
 }
 
 export interface OnboardingState {
@@ -145,10 +149,17 @@ export const useOnboardingStore = create<OnboardingState>()(
       
       updateDraft: (data) => 
         set((state) => {
-          if (state.userMode === "registered" && state.savedTrustCard) {
-            return { savedTrustCard: { ...state.savedTrustCard, ...data } }
+          const updatedData = { ...data };
+          if (updatedData.fullName !== undefined) {
+            const nameToSlugify = updatedData.fullName.trim();
+            updatedData.slug = nameToSlugify 
+              ? nameToSlugify.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') 
+              : 'user';
           }
-          return { trustCardDraft: { ...state.trustCardDraft, ...data } }
+          if (state.userMode === "registered" && state.savedTrustCard) {
+            return { savedTrustCard: { ...state.savedTrustCard, ...updatedData } }
+          }
+          return { trustCardDraft: { ...state.trustCardDraft, ...updatedData } }
         }),
         
       nextStep: () => 

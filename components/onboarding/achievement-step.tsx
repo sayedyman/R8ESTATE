@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { WizardNavigation } from "@/components/onboarding/wizard-navigation"
 
 export function AchievementStep() {
-  const { trustCardDraft, savedTrustCard, userMode, updateDraft, nextStep, previousStep, completeOnboarding } = useOnboardingStore()
+  const { trustCardDraft, savedTrustCard, userMode, updateDraft, nextStep, previousStep } = useOnboardingStore()
   const draft = userMode === "registered" && savedTrustCard ? savedTrustCard : trustCardDraft;
 
   // Onboarding uses a single achievement (the first one)

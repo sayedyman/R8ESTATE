@@ -4,16 +4,15 @@ import * as React from "react"
 import { ExternalLink } from "lucide-react"
 import { useOnboardingStore } from "@/stores/onboarding-store"
 import { useRouter } from "next/navigation"
-import { ROUTES } from "@/constants/routes"
+
 import { EditorForms } from "./trust-card-editor/editor-forms"
-import { TrustCardPreview } from "@/components/onboarding/trust-card-preview"
 
 interface TrustCardEditorViewProps {
   activeSection?: string
   onSectionChange?: (section: string) => void
 }
 
-export default function TrustCardEditorView({ activeSection, onSectionChange }: TrustCardEditorViewProps) {
+export default function TrustCardEditorView({ onSectionChange }: TrustCardEditorViewProps) {
   const { savedTrustCard, trustCardDraft, userMode } = useOnboardingStore()
   const router = useRouter()
   
@@ -62,7 +61,6 @@ export default function TrustCardEditorView({ activeSection, onSectionChange }: 
           <h2 className="text-2xl font-bold text-slate-900">Trust Card</h2>
           <p className="text-sm text-slate-500 mt-1">Manage your professional profile and trust signals.</p>
         </div>
-        
         <button
           onClick={handleViewAsClient}
           className="flex items-center gap-2 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900 px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm"
@@ -73,27 +71,21 @@ export default function TrustCardEditorView({ activeSection, onSectionChange }: 
       </div>
 
       {/* Editor & Preview Split */}
-      <div className="flex-1 flex flex-col-reverse lg:flex-row overflow-hidden min-h-0 gap-6">
+      <div className="flex-1 flex flex-col overflow-hidden min-h-0 gap-6">
         
-        {/* Left Column (Editor Area) */}
+        {/* Scrollable Container */}
         <div 
           id="editor-scroll-container"
-          className="flex-1 overflow-y-auto relative bg-white rounded-2xl border border-slate-200 shadow-sm custom-scrollbar"
+          className="flex-1 overflow-y-auto relative custom-scrollbar pr-2"
         >
-          <div className="p-6 md:p-8 max-w-3xl mx-auto space-y-12 pb-16">
-            <EditorForms />
+          
+          {/* Editor Area */}
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm">
+            <div className="p-6 md:p-8 max-w-5xl mx-auto space-y-12 pb-16">
+              <EditorForms />
+            </div>
           </div>
-        </div>
-
-        {/* Right Column (Sticky Preview) */}
-        <div className="w-full lg:w-[400px] xl:w-[420px] shrink-0 lg:overflow-y-auto flex flex-col gap-3 pb-6 custom-scrollbar">
-          <div className="flex items-center justify-between px-1">
-            <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-500">Live Preview</h2>
-            <p className="text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md">Updates as you type</p>
-          </div>
-          <div className="pointer-events-none">
-            <TrustCardPreview />
-          </div>
+          
         </div>
         
       </div>

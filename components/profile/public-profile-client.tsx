@@ -3,12 +3,9 @@
 import * as React from "react"
 import { notFound } from "next/navigation"
 import { usePublicTrustCard } from "@/hooks/use-public-trust-card"
-import { Card } from "@/components/ui/card"
-import { Trophy, Building2, Globe, Phone, Mail, AlertCircle, CheckCircle2, Star } from "lucide-react"
+import { Building2, Globe, Phone, Star, Shield } from "lucide-react"
 import { Linkedin } from "@/components/ui/social-icons"
-import { TrustCardAvatar } from "@/components/onboarding/trust-card-avatar"
-import { TrustCardHeader } from "@/components/onboarding/trust-card-header"
-import { TrustCardHighlights } from "@/components/onboarding/trust-card-highlights"
+import { TrustCardPreview } from "@/components/onboarding/trust-card-preview"
 import { useTranslations } from "@/hooks/use-translations"
 
 interface PublicProfileClientProps {
@@ -46,138 +43,86 @@ export function PublicProfileClient({ slug }: PublicProfileClientProps) {
   // Guests see the unverified state. Owners do not.
   const showUnverifiedState = !isOwner && !isVerified
 
+  const demoExperiences = [
+    {
+      id: "demo1",
+      jobTitle: "Senior Property Consultant",
+      company: "R8ESTATE Properties",
+      startDate: "2018",
+      endDate: "Present",
+      description: "Leading the luxury residential division, managing a portfolio of high-net-worth clients, and consistently exceeding annual sales targets by 150%. Specializing in off-plan properties and premium waterfront villas."
+    },
+    {
+      id: "demo2",
+      jobTitle: "Real Estate Agent",
+      company: "Prime Realty LLC",
+      startDate: "2014",
+      endDate: "2018",
+      description: "Successfully closed over 200 transactions. Advised clients on market trends, property valuations, and investment opportunities in emerging neighborhoods."
+    }
+  ]
+
+  const demoTestimonials = [
+    {
+      id: "demo1",
+      clientName: "Sarah Jenkins",
+      role: "Home Buyer",
+      rating: 5,
+      quote: "Absolutely phenomenal experience! Found our dream home in less than two weeks. The negotiation process was completely stress-free."
+    },
+    {
+      id: "demo2",
+      clientName: "Michael Chen",
+      role: "Property Investor",
+      rating: 5,
+      quote: "Extremely knowledgeable about the local market. Provided invaluable insights that helped me secure a fantastic investment property with great ROI."
+    }
+  ]
+
   return (
     <div className="min-h-screen bg-slate-50 pb-16">
-      <div className="max-w-4xl mx-auto px-4 py-8 lg:py-12 flex flex-col gap-8 md:gap-12 items-center">
+      <div className="max-w-7xl mx-auto px-4 py-6 lg:py-8 flex flex-col gap-10 items-center">
           
-          {/* Top Summary Card */}
-          <div className="w-full shrink-0 flex flex-col gap-5">
-            <Card className="w-full bg-white overflow-hidden shadow-xl shadow-slate-200/50 border-slate-200/60 p-0 rounded-3xl flex flex-col relative">
-              {/* Unverified Watermark */}
-              {showUnverifiedState && (
-                <div className="absolute inset-0 z-0 pointer-events-none flex items-center justify-center opacity-[0.03]">
-                  <p className="text-[150px] font-black text-slate-900 -rotate-12 uppercase tracking-widest whitespace-nowrap">Unverified</p>
-                </div>
-              )}
-
-              <div className={`h-24 md:h-32 w-full relative z-10 ${!showUnverifiedState ? 'bg-gradient-to-r from-emerald-900 to-emerald-800' : 'bg-gradient-to-r from-slate-900 to-slate-800'}`} />
-              
-              <div className="px-6 md:px-10 pb-8 relative -mt-12 md:-mt-16 flex flex-col md:flex-row gap-8 md:gap-12 z-10">
-                
-                {/* Left: Identity */}
-                <div className="flex flex-col items-center md:items-start flex-1">
-                  <TrustCardAvatar 
-                    profilePhoto={card.profilePhoto} 
-                    fullName={card.fullName}
-                  />
-                  
-                  <div className="mt-3 w-full text-center md:text-left">
-                    <TrustCardHeader 
-                      fullName={card.fullName}
-                      jobTitle={card.jobTitle}
-                      company={card.company}
-                    />
-                  </div>
-
-                  {/* Verification Badge */}
-                  <div className="mt-4 flex justify-center md:justify-start">
-                    {!showUnverifiedState ? (
-                      <div className="flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-700 rounded-full text-[11px] font-bold border border-emerald-100">
-                        <CheckCircle2 className="w-3.5 h-3.5" />
-                        Verified Professional
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-1.5 px-3 py-1 bg-amber-50 text-amber-700 rounded-full text-[11px] font-bold border border-amber-100">
-                        <AlertCircle className="w-3.5 h-3.5" />
-                        Verification Pending
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="w-full mt-4">
-                    <TrustCardHighlights 
-                      specialization={card.specialization}
-                      biggestStrength={card.biggestStrength}
-                    />
-                  </div>
-
-                  {/* Location & Response Time */}
-                  <div className="mt-6 space-y-1.5 text-center md:text-left">
-                    <p className="text-[13px] text-slate-500 font-medium">Location: <strong className="text-slate-900">Dubai, UAE</strong></p>
-                    <p className="text-[13px] text-slate-500 font-medium">Response Time: <strong className="text-slate-900">Within 1 hour</strong></p>
-                  </div>
-                </div>
-
-                {/* Right: Metrics & QR */}
-                <div className="flex flex-col flex-1 pt-2 md:pt-16">
-                  {/* Key Metrics Grid */}
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center border-y md:border-y-0 md:border-b border-slate-100 py-5 md:py-0 md:pb-6">
-                    <div>
-                      <p className="text-2xl font-black text-slate-900">{card.trustScore || "98"}</p>
-                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-0.5">Trust Score</p>
-                    </div>
-                    <div>
-                      <p className="text-2xl font-black text-slate-900">{card.yearsOfExperience || "5"}</p>
-                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-0.5">Years Exp.</p>
-                    </div>
-                    <div>
-                      <p className="text-2xl font-black text-slate-900">120+</p>
-                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-0.5">Deals Closed</p>
-                    </div>
-                    <div>
-                      <p className="text-2xl font-black text-slate-900">4.9/5</p>
-                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-0.5">Client Rating</p>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pt-6">
-                    {/* Badges / Verification Preview */}
-                    <div className="flex flex-wrap justify-center md:justify-start gap-2">
-                      {card.verifications && card.verifications.filter(v => v.status === 'Verified').slice(0, 3).map((v) => (
-                        <div key={v.id} className="flex items-center gap-1.5 px-3 py-2 bg-amber-50 text-amber-700 rounded-xl text-xs font-bold border border-amber-100 shadow-sm">
-                          <Trophy className="w-4 h-4" />
-                          {v.title}
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* QR Code Placeholder */}
-                    <div className="flex flex-col items-center justify-center shrink-0">
-                      <div className="w-24 h-24 bg-white border border-slate-200 rounded-2xl flex items-center justify-center p-2.5 shadow-sm">
-                         <svg xmlns="http://www.w3.org/2000/svg" className="w-full h-full text-slate-800" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path strokeLinecap="square" strokeLinejoin="miter" d="M3 3h6v6H3zM15 3h6v6h-6zM3 15h6v6H3zM15 15h6v6h-6zM9 3v6M15 9h-6M21 9v6M9 21v-6M3 9h6M9 15h6M15 21v-6" /></svg>
-                      </div>
-                      <p className="text-[9px] text-slate-400 uppercase tracking-widest font-bold mt-3">Scan to Connect</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="bg-slate-50 border-t border-slate-100 py-3 text-center mt-auto z-10">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
-                  {t("poweredBy")}
+          <div className="w-full max-w-4xl mx-auto flex flex-col gap-5">
+            {/* Warning Banner */}
+            {showUnverifiedState && (
+              <div className="w-full bg-amber-50 border border-amber-200 rounded-xl py-4 px-5 flex items-center gap-3">
+                <Shield className="w-5 h-5 text-amber-500 shrink-0" />
+                <p className="text-[15px] font-medium text-amber-900/80 leading-snug">
+                  This Trust Card is currently unverified. The information shown is provided by the owner and has not yet been verified by R8ESTATE.
                 </p>
               </div>
-            </Card>
+            )}
+
+            {/* Hero Trust Card */}
+            <div className="w-full shrink-0 flex flex-col items-center justify-center">
+              <div className="w-full transform sm:scale-95 origin-top transition-transform">
+                <TrustCardPreview cardData={card} layout="landscape" showUnverifiedState={showUnverifiedState} />
+              </div>
+            </div>
           </div>
 
           {/* Main Content */}
-          <div className="w-full flex flex-col gap-6">
+          <div className="w-full flex flex-col gap-6 max-w-4xl mx-auto">
             
 
 
             {/* About Section */}
-            {card.shortBio && (
+            {(card.shortBio || showUnverifiedState) && (
               <section className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-slate-100">
                 <h2 className="text-xl font-bold text-slate-900 mb-4">{t("about")}</h2>
-                <p className="text-slate-600 leading-relaxed text-[15px] whitespace-pre-wrap">{card.shortBio}</p>
+                <p className="text-slate-600 leading-relaxed text-[15px] whitespace-pre-wrap">
+                  {card.shortBio || "I am a dedicated Real Estate Consultant with a deep passion for matching clients with their perfect homes. Over the past decade, I have built a strong reputation for my market knowledge, negotiation skills, and unwavering commitment to client satisfaction. Whether you are buying your first home or expanding your investment portfolio, I provide tailored guidance every step of the way."}
+                </p>
               </section>
             )}
 
             {/* Experience Section */}
-            {card.experiences && card.experiences.length > 0 && (
+            {((card.experiences && card.experiences.length > 0) || showUnverifiedState) && (
               <section className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-slate-100">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-xl font-bold text-slate-900">{t("experience")}</h2>
-                  {card.experiences.length > 1 && (
+                  {card.experiences && card.experiences.length > 2 && (
                     <button className="text-sm font-semibold text-primary hover:text-primary/80 transition-colors">
                       View All ({card.experiences.length})
                     </button>
@@ -185,7 +130,7 @@ export function PublicProfileClient({ slug }: PublicProfileClientProps) {
                 </div>
                 
                 <div className="space-y-6">
-                  {card.experiences.slice(0, 1).map((exp) => (
+                  {(card.experiences && card.experiences.length > 0 ? card.experiences.slice(0, 2) : demoExperiences).map((exp) => (
                     <div key={exp.id} className="flex gap-5">
                       <div className="w-12 h-12 rounded-2xl bg-slate-50 border border-slate-100 text-slate-400 flex items-center justify-center shrink-0 shadow-sm mt-1">
                         <Building2 className="w-6 h-6" />
@@ -277,32 +222,25 @@ export function PublicProfileClient({ slug }: PublicProfileClientProps) {
                 )}
               </div>
               
-              {!card.testimonials || card.testimonials.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-12 bg-slate-50 rounded-2xl border border-slate-100 border-dashed text-center">
-                  <Star className="h-10 w-10 text-slate-300 mb-3" />
-                  <h3 className="text-base font-bold text-slate-900 mb-1">No reviews yet</h3>
-                  <p className="text-[13px] text-slate-500 max-w-sm mx-auto leading-relaxed">
-                    Verified client reviews will appear here once available.
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-6">
-                  {card.testimonials.slice(0, 1).map((test) => (
-                    <div key={test.id} className="bg-slate-50 rounded-2xl p-6 border border-slate-100 relative">
-                      <div className="flex gap-1 mb-4">
-                        {[...Array(5)].map((_, i) => (
-                          <Star key={i} className={`w-4 h-4 ${i < (test.rating || 5) ? 'fill-amber-400 text-amber-400' : 'fill-slate-200 text-slate-200'}`} />
-                        ))}
-                      </div>
-                      <p className="text-slate-700 italic leading-relaxed mb-6">"{test.quote}"</p>
-                      <div>
-                        <p className="font-bold text-slate-900">{test.clientName}</p>
-                        <p className="text-sm text-slate-500">{test.role}</p>
-                      </div>
+              <div className="space-y-6">
+                {(card.testimonials && card.testimonials.length > 0 ? card.testimonials.slice(0, 2) : demoTestimonials).map((test) => (
+                  <div key={test.id} className="bg-slate-50 rounded-2xl p-6 border border-slate-100 relative">
+                    {test.id.startsWith('demo') && (
+                      <div className="absolute top-4 right-4 px-2 py-1 bg-slate-200 text-slate-500 text-[10px] uppercase font-bold rounded-md">Sample</div>
+                    )}
+                    <div className="flex gap-1 mb-4">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className={`w-4 h-4 ${i < (test.rating || 5) ? 'fill-amber-400 text-amber-400' : 'fill-slate-200 text-slate-200'}`} />
+                      ))}
                     </div>
-                  ))}
-                </div>
-              )}
+                    <p className="text-slate-700 italic leading-relaxed mb-6">&quot;{test.quote}&quot;</p>
+                    <div>
+                      <p className="font-bold text-slate-900">{test.clientName}</p>
+                      <p className="text-sm text-slate-500">{test.role}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </section>
 
           </div>

@@ -11,7 +11,7 @@ export default function PublicProfileNotFound() {
         </div>
         <h1 className="text-2xl font-bold text-slate-900 mb-3">Profile Not Found</h1>
         <p className="text-slate-500 mb-8 leading-relaxed">
-          We couldn't find a Trust Card at this address. The profile may have been removed or the link might be broken.
+          We couldn&apos;t find a Trust Card at this address. The profile may have been removed or the link might be broken.
         </p>
         <Link href="/">
           <Button size="lg" className="w-full h-12 rounded-xl font-semibold shadow-sm hover:shadow-md transition-all">

@@ -1,13 +1,13 @@
 "use client"
 import * as React from "react"
 import Link from "next/link"
-import Image from "next/image"
+
 import { Container } from "@/components/ui/container"
 import { useTranslations } from "@/hooks/use-translations"
 
 export function Footer() {
   const t = useTranslations("footer")
-  const [logoError, setLogoError] = React.useState(false)
+
 
   return (
     <footer className="border-t border-border bg-card py-12 md:py-16">

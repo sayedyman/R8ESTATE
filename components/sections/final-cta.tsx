@@ -6,7 +6,7 @@ import { motion } from "framer-motion"
 import { buttonVariants } from "@/components/ui/button"
 import Link from "next/link"
 import { ROUTES } from "@/constants/routes"
-import { CheckCircle2, ShieldCheck, Lock, Target, Database, TrendingUp, Star } from "lucide-react"
+import { CheckCircle2, ShieldCheck, Target, TrendingUp, Star } from "lucide-react"
 import { useTranslations } from "@/hooks/use-translations"
 
 export function FinalCTA() {

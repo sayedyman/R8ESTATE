@@ -6,8 +6,7 @@ import { useOnboardingStore } from "@/stores/onboarding-store"
 import { ROUTES } from "@/constants/routes"
 import { Button } from "@/components/ui/button"
 import { TrustCardPreview } from "@/components/onboarding/trust-card-preview"
-import { QrCode, Copy, Download, Share2, CheckCircle2, ShieldCheck, TrendingUp, Eye } from "lucide-react"
-import { motion } from "framer-motion"
+import { QrCode, Copy, Share2, CheckCircle2, ShieldCheck, TrendingUp, Eye } from "lucide-react"
 
 export default function PublishPage() {
   const router = useRouter()
@@ -15,9 +14,7 @@ export default function PublishPage() {
   const [publishState, setPublishState] = React.useState<"idle" | "publishing" | "success">("idle")
 
   const getProfileUrl = () => {
-    const slug = trustCardDraft.slug || (trustCardDraft.fullName
-      ? trustCardDraft.fullName.toLowerCase().trim().replace(/[^\w\s-]/g, "").replace(/[\s_-]+/g, "-").replace(/^-+|-+$/g, "")
-      : "profile")
+    const slug = trustCardDraft.slug || "user"
     return typeof window !== "undefined" ? `${window.location.origin}/u/${slug}` : `/u/${slug}`
   }
 

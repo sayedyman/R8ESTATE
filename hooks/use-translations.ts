@@ -2,6 +2,7 @@ import { messages } from "@/constants/messages"
 
 export function useTranslations(namespace: string) {
   const parts = namespace.split('.');
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let current: any = messages;
   for (const part of parts) {
     if (current && current[part] !== undefined) {
@@ -12,7 +13,7 @@ export function useTranslations(namespace: string) {
     }
   }
 
-  const t = (key: string, variables?: Record<string, any>) => {
+  const t = (key: string, variables?: Record<string, string | number>) => {
     let text = current?.[key];
     if (text === undefined) {
       // Sometimes keys are nested like 'items.buildTrust.title' inside the t() function
@@ -55,7 +56,7 @@ export function useTranslations(namespace: string) {
     return text;
   };
 
-  t.rich = (key: string, tags?: any) => {
+  t.rich = (key: string) => {
     return t(key);
   };
 

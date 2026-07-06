@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Plus, Trash2, ArrowUp, ArrowDown, ChevronDown, ChevronUp } from "lucide-react"
 
-export function TestimonialManager({ isEditorMode }: { isEditorMode?: boolean } = {}) {
+export function TestimonialManager() {
   const { trustCardDraft, savedTrustCard, userMode, updateDraft } = useOnboardingStore()
   const draft = userMode === "registered" && savedTrustCard ? savedTrustCard : trustCardDraft;
 
